@@ -119,4 +119,10 @@ export default defineConfig({
   mfsu: {
     exclude: ['@playwright/test'],
   },
+  /**
+   * 乾坤微应用
+   */
+  qiankun: {
+    slave: {},
+  },
 });
