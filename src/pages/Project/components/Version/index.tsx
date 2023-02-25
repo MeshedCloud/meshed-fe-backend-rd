@@ -29,7 +29,7 @@ const ProjectVersionPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
         setMenuTabs(tabs)
       }
     })
-  }, []);
+  });
   return (
     <ProList<any>
       rowKey="name"

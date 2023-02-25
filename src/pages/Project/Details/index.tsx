@@ -7,7 +7,8 @@ import ProjectWarehouse from "@/pages/Project/components/Warehouse";
 import ProjectService from "@/pages/Project/components/Service";
 import ProjectVersion from "@/pages/Project/components/Version";
 import ProjectSetting from "@/pages/Project/Details/components/Setting";
-import {ProjectAccessModeEnum, ProjectDetail, ProjectStatusEnum, ProjectTypesEnum} from "@/services/project/project";
+import type {ProjectDetail} from "@/services/project/project";
+import {ProjectAccessModeEnum, ProjectStatusEnum, ProjectTypesEnum} from "@/services/project/project";
 import {getProjectDetails} from "@/services/project/api";
 import {Link, useMatch} from "@@/exports";
 import ProjectModel from "@/pages/Project/components/Model";
@@ -77,7 +78,7 @@ const ProjectDetails: React.FC = () => {
 
   useEffect(() => {
     getProjectDetailsData(projectKey);
-  }, []);
+  });
 
   return (
     <PageContainer

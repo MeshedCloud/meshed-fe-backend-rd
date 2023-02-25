@@ -1,11 +1,11 @@
 import {Modal} from 'antd';
 import * as React from 'react';
-import {LegacyButtonType} from 'antd/lib/button/button';
+import type {LegacyButtonType} from 'antd/lib/button/button';
 import {ExclamationCircleFilled} from '@ant-design/icons';
 
 export function confirm(
-  title: String,
-  content: String,
+  title: string,
+  content: string,
   onOk?: (...args: any[]) => any,
   onCancel?: (...args: any[]) => any,
   okType?: LegacyButtonType,
@@ -24,8 +24,8 @@ export function confirm(
 }
 
 export function confirmWarning(
-  title: String,
-  content: String,
+  title: string,
+  content: string,
   onOk?: (...args: any[]) => any,
   onCancel?: (...args: any[]) => any,
 ) {

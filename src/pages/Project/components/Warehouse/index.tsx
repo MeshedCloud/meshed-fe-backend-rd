@@ -5,7 +5,8 @@ import {Button, Input, Pagination} from "_antd@4.24.2@antd";
 import {Space} from "antd";
 import {BranchesOutlined, CopyOutlined, EllipsisOutlined} from "@ant-design/icons";
 import Tag from 'antd/es/tag';
-import {Warehouse, WarehouseTypes} from "@/services/deployment/warehouse";
+import type {Warehouse} from "@/services/deployment/warehouse";
+import {WarehouseTypes} from "@/services/deployment/warehouse";
 import {getProjectWarehouseList} from "@/services/deployment/api";
 
 const pageSize = 20;
@@ -19,9 +20,9 @@ const ProjectWarehousePage: React.FC<{ projectKey: string }> = ({projectKey}) =>
   const [current, setCurrent] = useState<number>(1)
   const [filterParams, setFilterParams] = useState<any>({})
 
-  const getList = (params: {}, pageIndex?: number,) => {
-    params['pageSize'] = pageSize;
-    params['pageIndex'] = pageIndex ? pageIndex : current;
+  const getList = (params: { pageSize: number, pageIndex: number }, pageIndex?: number,) => {
+    params.pageSize = pageSize;
+    params.pageIndex = pageIndex ? pageIndex : current;
     getProjectWarehouseList(projectKey, params).then(async res => {
       if (res.success && res.data) {
         setDataSource(res.data)
@@ -35,14 +36,14 @@ const ProjectWarehousePage: React.FC<{ projectKey: string }> = ({projectKey}) =>
 
   const onSearch = (value: string) => {
     const params: any = Object.assign({}, filterParams);
-    params['keyword'] = value;
+    params.keyword = value;
     setKeyword(value)
     getList(params)
   };
 
   const onChange = (value: number) => {
     const params: any = Object.assign({}, filterParams);
-    params['keyword'] = keyword;
+    params.keyword = keyword;
     setCurrent(value)
     getList(params, value)
   };
@@ -50,7 +51,7 @@ const ProjectWarehousePage: React.FC<{ projectKey: string }> = ({projectKey}) =>
     const params: any = Object.assign({}, filtersInitialValues);
     setFilterParams(params)
     getList(params);
-  }, []);
+  });
   return (
     <ProCard style={{minHeight: 700}}>
       <div

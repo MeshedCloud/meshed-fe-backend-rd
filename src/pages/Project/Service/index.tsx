@@ -1,11 +1,10 @@
+import type {FormListActionType, ProFormInstance} from '@ant-design/pro-components';
 import {
   FooterToolbar,
-  FormListActionType,
   PageContainer,
   ProCard,
   ProForm,
   ProFormGroup,
-  ProFormInstance,
   ProFormList,
   ProFormRadio,
   ProFormSelect,
@@ -15,7 +14,8 @@ import {
 } from '@ant-design/pro-components';
 import React, {useEffect, useRef, useState} from 'react';
 import {Link, useMatch} from "@@/exports";
-import {Button, Col, Divider, Input, InputRef, Row} from "antd";
+import type {InputRef} from "antd";
+import {Button, Col, Divider, Input, Row} from "antd";
 import {ArrowLeftOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import {strToUri} from "@/common/uri";
 import {
@@ -24,11 +24,11 @@ import {
   getProjectServiceDomainSelect,
   saveProjectService
 } from "@/services/project/api";
+import type {ProjectServiceDetails} from "@/services/project/serviceModel";
 import {
   BaseFields,
   BaseGenerics,
   PathVariableItem,
-  ProjectServiceDetails,
   RequestTypeOptions,
   ServiceBehaviorOptions,
   ServiceTypes
@@ -87,14 +87,14 @@ const ProjectServiceDetailsPage: React.FC = () => {
 
   const saveService = async (data: any) => {
     if (upperCaseOperate !== 'COPY') {
-      data['id'] = undefined
+      data.id = undefined
     }
     if (upperCaseOperate === 'EDIT') {
-      data['uuid'] = uuid
+      data.uuid = uuid
     }
-    data['type'] = upperCaseType
-    data['operate'] = upperCaseOperate
-    data['projectKey'] = key
+    data.type = upperCaseType
+    data.operate = upperCaseOperate
+    data.projectKey = key
     await saveProjectService(data)
   }
 
@@ -109,7 +109,7 @@ const ProjectServiceDetailsPage: React.FC = () => {
         setFields([...BaseFields, ...res.data])
       }
     })
-  }, [])
+  })
   return (
     <PageContainer fixedHeader content={<Link to={`/project/details/service/${key}`}><ArrowLeftOutlined/>返回服务列表</Link>}
                    title={OperateTypes[upperCaseOperate]?.text + ServiceTypes[upperCaseType]?.text + "服务"}>

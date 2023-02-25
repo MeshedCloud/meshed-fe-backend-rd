@@ -5,8 +5,8 @@ import ProjectItem from "@/pages/Project/components/ProjectItem";
 import {Pagination} from "_antd@4.24.2@antd";
 import {Input} from 'antd';
 import type {SortOrder} from 'antd/es/table/interface';
-import {Store} from "_rc-field-form@1.27.3@rc-field-form/lib/interface";
-import {Project} from "@/services/project/project";
+import type {Store} from "_rc-field-form@1.27.3@rc-field-form/lib/interface";
+import type {Project} from "@/services/project/project";
 import {Link} from "@@/exports";
 
 
@@ -32,9 +32,9 @@ const ProjectList: React.FC<{
   const [filterParams, setFilterParams] = useState<any>({})
 
 
-  const getList = (params: {}, pageIndex?: number) => {
-    params['pageSize'] = pageSize;
-    params['pageIndex'] = pageIndex ? pageIndex : current;
+  const getList = (params: any, pageIndex?: number) => {
+    params.pageSize = pageSize;
+    params.pageIndex = pageIndex ? pageIndex : current;
     request?.(params).then(async res => {
       if (res.success && res.data) {
         setList(res.data)
@@ -48,7 +48,7 @@ const ProjectList: React.FC<{
 
   const onSearch = (value: string) => {
     const params: any = Object.assign({}, filterParams);
-    params['keyword'] = value;
+    params.keyword = value;
     setKeyword(value)
     getList(params)
   };
@@ -56,7 +56,7 @@ const ProjectList: React.FC<{
 
   const onChange = (value: number) => {
     const params: any = Object.assign({}, filterParams);
-    params['keyword'] = keyword;
+    params.keyword = keyword;
     setCurrent(value)
     getList(params, value)
   };
@@ -65,7 +65,7 @@ const ProjectList: React.FC<{
     const params: any = Object.assign({}, filtersInitialValues);
     setFilterParams(params)
     getList(params);
-  }, []);
+  }, [filtersInitialValues]);
   return (
     <div>
       <div

@@ -1,4 +1,4 @@
-import {Response} from '@/common/models';
+import type {Response} from '@/common/models';
 import {message} from 'antd';
 
 export function success(res: undefined | Response<any>, successMsg?: string) {

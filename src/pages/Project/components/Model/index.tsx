@@ -30,7 +30,7 @@ const ProjectModelPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
         setMenuTabs(approvalTypes)
       }
     })
-  }, []);
+  });
   return (
     <ProList<any>
       rowKey="name"

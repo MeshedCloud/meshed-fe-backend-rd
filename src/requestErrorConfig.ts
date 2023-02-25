@@ -99,7 +99,7 @@ export const errorConfig: RequestConfig = {
       console.log(config?.params);
       if (config?.params?.current) {
         config.params.pageIndex = config?.params?.current;
-        delete config.params['current'];
+        delete config.params.current;
       }
       return {...config, url};
     },

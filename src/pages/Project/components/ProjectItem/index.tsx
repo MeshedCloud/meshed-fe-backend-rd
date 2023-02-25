@@ -1,8 +1,9 @@
 import React from 'react';
 import {EllipsisOutlined} from "@ant-design/icons";
-import {Dropdown, MenuProps} from "antd";
+import type {MenuProps} from "antd";
+import {Dropdown} from "antd";
 import styles from './index.less';
-import {Project} from "@/services/project/project";
+import type {Project} from "@/services/project/project";
 
 const items: MenuProps['items'] = [
   {

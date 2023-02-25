@@ -42,8 +42,7 @@ const Project: React.FC = () => {
                     backgroundImage:
                       "url('https://gw.alipayobjects.com/zos/bmw-prod/daaf8d50-8e6d-4251-905d-676a24ddfa12.svg')",
                   }}
-                >
-                </div>
+                 />
                 <div
                   style={{
                     fontSize: '18px',
@@ -61,6 +60,7 @@ const Project: React.FC = () => {
           <ProjectList
             leftFilters={[
               <ProFormSelect
+                key='type'
                 name="type"
                 showSearch
                 valueEnum={{
@@ -70,6 +70,7 @@ const Project: React.FC = () => {
                 placeholder="项目类型"
               />,
               <ProFormSelect
+                key='domain'
                 name="domain"
                 showSearch
                 valueEnum={{

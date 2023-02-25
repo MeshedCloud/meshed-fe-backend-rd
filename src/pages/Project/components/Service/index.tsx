@@ -1,5 +1,6 @@
 import {ProList} from '@ant-design/pro-components';
-import {Button, Radio, RadioChangeEvent, Space, Tag} from 'antd';
+import type {RadioChangeEvent} from 'antd';
+import {Button, Radio, Space, Tag} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {ApprovalTypes} from "@/services/project/constant";
 import {getProjectServiceCount, getProjectServiceList} from '@/services/project/api';
@@ -50,7 +51,7 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
         setMenuTabs(approvalTypes)
       }
     })
-  }, []);
+  });
   return (
     <ProList<any>
       rowKey="name"

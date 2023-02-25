@@ -1,5 +1,5 @@
-import {DataNode} from 'antd/lib/tree';
-import {TransferDirection, TransferItem} from 'antd/es/transfer';
+import type {DataNode} from 'antd/lib/tree';
+import type {TransferDirection, TransferItem} from 'antd/es/transfer';
 import {Transfer, Tree} from 'antd';
 
 interface TreeTransferProps {

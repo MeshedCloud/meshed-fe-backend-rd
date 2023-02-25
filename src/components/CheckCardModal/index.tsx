@@ -53,6 +53,7 @@ export default (props: Props) => {
             {
               Object.keys(props.data).map(key => {
                 return <CheckCard
+                  key={key}
                   avatar={props.data[key].avatar}
                   title={props.data[key].text}
                   description={props.data[key].description}

@@ -24,6 +24,7 @@ const Workbench: React.FC = () => {
           <Index
             leftFilters={[
               <ProFormSelect
+                key='type'
                 name="type"
                 showSearch
                 valueEnum={{

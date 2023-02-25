@@ -1,3 +1,4 @@
+import type {ProFormInstance} from '@ant-design/pro-components';
 import {
   CheckCard,
   PageContainer,
@@ -6,7 +7,6 @@ import {
   ProForm,
   ProFormCheckbox,
   ProFormGroup,
-  ProFormInstance,
   ProFormRadio,
   ProFormSwitch,
   ProFormText,
@@ -15,11 +15,11 @@ import {
 } from '@ant-design/pro-components';
 import {message} from 'antd';
 import React, {useRef, useState} from 'react';
+import type {ProjectCmd} from "@/services/project/project";
 import {
   PageTemplateEnum,
   ProjectAccessModeEnum,
   ProjectAccessModeOptions,
-  ProjectCmd,
   ProjectTypesEnum,
   ServiceTemplateEnum
 } from "@/services/project/project";
@@ -36,8 +36,8 @@ const waitTime = (time: number = 100) => {
 const CreateProject: React.FC = () => {
   const formRef = useRef<ProFormInstance>();
   const [type, setType] = useState<string>('SERVICE')
-  const [model, setModel] = useState<Object>({})
-  const [result, setResult] = useState<Object>({})
+  const [model, setModel] = useState<any>({})
+  const [result, setResult] = useState<any>({})
 
   return (
     <PageContainer>
@@ -79,6 +79,7 @@ const CreateProject: React.FC = () => {
                   {
                     Object.keys(ProjectTypesEnum).map(key => {
                       return <CheckCard
+                        key={key}
                         avatar={ProjectTypesEnum[key].avatar}
                         title={ProjectTypesEnum[key].text}
                         description={ProjectTypesEnum[key].description}
@@ -101,6 +102,7 @@ const CreateProject: React.FC = () => {
                       {
                         Object.keys(PageTemplateEnum).map(key => {
                           return <CheckCard
+                            key={key}
                             avatar={PageTemplateEnum[key].avatar}
                             title={PageTemplateEnum[key].text}
                             description={PageTemplateEnum[key].description}
@@ -190,28 +192,28 @@ const CreateProject: React.FC = () => {
           >
             <ProDescriptions style={{maxWidth: '800px'}} column={2} title="立项信息确认" tooltip="包含了从服务器请求，columns等功能">
               <ProDescriptions.Item label="项目名称" span={2} valueType="text">
-                {result['name']}
+                {result.name}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="项目类型" valueEnum={ProjectTypesEnum}>
-                {result['type']}
+                {result.type}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="项目级别" valueEnum={ProjectAccessModeEnum}>
-                {result['accessMode']}
+                {result.accessMode}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="前端模板" valueEnum={PageTemplateEnum}>
-                {result['pageTemplate']}
+                {result.pageTemplate}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="前端项目名称" valueType="text">
-                meshed-fe-backend-{result['enname']}
+                meshed-fe-backend-{result.enname}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="后端模板" valueEnum={ServiceTemplateEnum}>
-                {result['serviceTemplate']}
+                {result.serviceTemplate}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="后端项目名称" valueType="text">
-                meshed-cloud-{result['name']} & meshed-cloud-{result['name']}-client
+                meshed-cloud-{result.name} & meshed-cloud-{result.name}-client
               </ProDescriptions.Item>
               <ProDescriptions.Item label="立项缘由" span={2} valueType="text">
-                {result['describe']}
+                {result.describe}
               </ProDescriptions.Item>
             </ProDescriptions>
             <ProFormCheckbox.Group

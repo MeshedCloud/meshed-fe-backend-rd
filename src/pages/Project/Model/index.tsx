@@ -29,14 +29,14 @@ const ProjectServiceDetails: React.FC = () => {
   const [fields, setFields] = useState<string[]>(BaseFields);
   const saveModel = async (data: any) => {
     if (upperCaseOperate !== 'COPY') {
-      data['id'] = undefined
+      data.id = undefined
     }
     if (upperCaseOperate === 'EDIT') {
-      data['uuid'] = uuid
+      data.uuid = uuid
     }
-    data['type'] = upperCaseType
-    data['operate'] = upperCaseOperate
-    data['projectKey'] = projectKey
+    data.type = upperCaseType
+    data.operate = upperCaseOperate
+    data.projectKey = projectKey
     await saveProjectModel(data)
   }
   useEffect(() => {
@@ -46,7 +46,7 @@ const ProjectServiceDetails: React.FC = () => {
         setFields([...BaseFields, ...res.data])
       }
     })
-  }, [])
+  })
   return (
     <PageContainer fixedHeader
                    content={<Link to={`/project/details/model/${projectKey}`}><ArrowLeftOutlined/>返回模型列表</Link>}
@@ -99,9 +99,7 @@ const ProjectServiceDetails: React.FC = () => {
                     </Col>
                   </Row>
                   <Row>
-                    <Col span={24}>
-
-                    </Col>
+                    <Col span={24}/>
                   </Row>
                   <Row>
                     <Col span={24}>

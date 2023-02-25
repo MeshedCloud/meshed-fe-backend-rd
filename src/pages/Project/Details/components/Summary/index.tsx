@@ -2,6 +2,7 @@ import React from 'react';
 import {ProCard} from "@ant-design/pro-components";
 
 const ProjectSummary: React.FC<{ projectKey: string }> = ({projectKey}) => {
+  console.log(projectKey)
   return (
     <ProCard direction="column" ghost gutter={[0, 16]}>
       <ProCard gutter={16} ghost>
