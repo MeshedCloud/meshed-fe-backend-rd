@@ -5,4 +5,17 @@ module.exports = {
     page: true,
     REACT_APP_ENV: true,
   },
+  // .eslintrc.js
+  "rules": {
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "extendDefaults": true,
+        "types": {
+          "{}": false
+        }
+      }
+    ]
+  }
+
 };

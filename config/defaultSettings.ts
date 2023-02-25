@@ -1,4 +1,4 @@
-import { Settings as LayoutSettings } from '@ant-design/pro-components';
+import {Settings as LayoutSettings} from '@ant-design/pro-components';
 
 /**
  * @name
@@ -17,8 +17,7 @@ const Settings: LayoutSettings & {
   colorWeak: false,
   title: '研发平台',
   pwa: false,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: 'http://s.meshed.cn/meshed/svg/logo-no-background.svg',
   iconfontUrl: '',
 };
-
 export default Settings;
