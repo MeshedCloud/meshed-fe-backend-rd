@@ -29,7 +29,7 @@ export const OperateTypes = {
 
 }
 
-export const ApprovalTypes = {
+export const ReleaseStatus = {
 
   RELEASE: {
     color: '#2db7f5',

@@ -6,6 +6,7 @@ import ActionCard from "@/pages/Project/components/ActionCard";
 import ProjectList from "@/pages/Project/components/ProjectList";
 import {getProjectList} from "@/services/project/api";
 import {PlusOutlined} from "@ant-design/icons";
+import {ProjectAccessModeEnum, ProjectTypesEnum} from "@/services/project/project";
 
 
 const Project: React.FC = () => {
@@ -63,28 +64,20 @@ const Project: React.FC = () => {
                 key='type'
                 name="type"
                 showSearch
-                valueEnum={{
-                  all: '全部项目',
-                  service: '服务项目',
-                }}
+                valueEnum={ProjectTypesEnum}
                 placeholder="项目类型"
               />,
               <ProFormSelect
-                key='domain'
-                name="domain"
+                key='accessMode'
+                name="accessMode"
                 showSearch
-                valueEnum={{
-                  all: '全部',
-                  security: '安全领域',
-                  middle: '中台领域',
-                  common: '通用领域',
-                }}
-                placeholder="板块"
+                valueEnum={ProjectAccessModeEnum}
+                placeholder="项目级别"
               />
             ]}
             filtersInitialValues={{
-              type: 'all',
-              domain: 'all',
+              type: '',
+              accessMode: '',
             }}
             request={getProjectList}
           />

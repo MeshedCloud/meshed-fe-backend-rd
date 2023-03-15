@@ -14,57 +14,44 @@ import {
 } from '@ant-design/pro-components';
 import React, {useEffect, useRef, useState} from 'react';
 import {Link, useMatch} from "@@/exports";
-import type {InputRef} from "antd";
-import {Button, Col, Divider, Input, Row} from "antd";
-import {ArrowLeftOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
+import {Button, Col, Row} from "antd";
+import {ArrowLeftOutlined, EditOutlined} from "@ant-design/icons";
 import {strToUri} from "@/common/uri";
-import {
-  getProjectModelFieldSelect,
-  getProjectServiceDetails,
-  getProjectServiceDomainSelect,
-  saveProjectService
-} from "@/services/project/api";
+import {getProjectModelSelect, getProjectServiceDetails, saveProjectService} from "@/services/project/api";
 import type {ProjectServiceDetails} from "@/services/project/serviceModel";
 import {
   BaseFields,
   BaseGenerics,
   PathVariableItem,
+  RequestBodyItem,
+  RequestModeOptions,
   RequestTypeOptions,
-  ServiceBehaviorOptions,
   ServiceTypes
 } from "@/services/project/serviceModel"
 import {OperateEditable, OperateTypes} from "@/services/project/constant";
 
 const ProjectServiceDetailsPage: React.FC = () => {
 // @ts-ignore
-  const {params: {type, operate, key, uuid}} = useMatch('/project/:key/service/:type/:operate/:uuid')
-  const upperCaseType = type.toUpperCase()
+  const {
+    params: {
+      projectKey,
+      operate,
+      groupId,
+      uuid
+    }
+  } = useMatch('/project/service/:projectKey/:operate/:groupId/:uuid')
+  // const upperCaseType = type.toUpperCase()
   const upperCaseOperate = operate.toUpperCase()
   const editable: boolean = OperateEditable.includes(upperCaseOperate)
   const [uriDisabled, setUriDisabled] = useState<boolean>(true)
-  const [items, setItems] = useState<string[]>([]);
   const [fields, setFields] = useState<string[]>(BaseFields);
   const formRef = useRef<ProFormInstance<ProjectServiceDetails>>();
   const [uriPrefix, setUriPrefix] = useState('');
-  const [name, setName] = useState('');
-  const inputRef = useRef<InputRef>(null);
   const paramActionRef = useRef<FormListActionType<{
     fieldName: string,
     fieldType: string,
     generic: string,
   }>>();
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-
-  const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    e.preventDefault();
-    setItems([...items, name]);
-    setName('');
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
-  };
 
 
   const pathHandler = () => {
@@ -92,27 +79,22 @@ const ProjectServiceDetailsPage: React.FC = () => {
     if (upperCaseOperate === 'EDIT') {
       data.uuid = uuid
     }
-    data.type = upperCaseType
     data.operate = upperCaseOperate
-    data.projectKey = key
+    data.groupId = groupId
     await saveProjectService(data)
   }
 
   useEffect(() => {
-    getProjectServiceDomainSelect(uuid, {type}).then(res => {
-      if (res.success && res.data) {
-        setItems(res.data)
-      }
-    })
-    getProjectModelFieldSelect(uuid, {}).then(res => {
+    getProjectModelSelect(uuid, {}).then(res => {
       if (res.success && res.data) {
         setFields([...BaseFields, ...res.data])
       }
     })
-  })
+  }, [])
   return (
-    <PageContainer fixedHeader content={<Link to={`/project/details/service/${key}`}><ArrowLeftOutlined/>返回服务列表</Link>}
-                   title={OperateTypes[upperCaseOperate]?.text + ServiceTypes[upperCaseType]?.text + "服务"}>
+    <PageContainer fixedHeader
+                   content={<Link to={`/project/details/service/${projectKey}`}><ArrowLeftOutlined/>返回服务列表</Link>}
+                   title={OperateTypes[upperCaseOperate]?.text + ServiceTypes['API']?.text + "服务"}>
       <ProCard style={{padding: 10}} extra={
         OperateTypes[upperCaseOperate]?.readonly ? <Button type="link"><EditOutlined/>编辑副本</Button> : <></>
       }>
@@ -123,12 +105,12 @@ const ProjectServiceDetailsPage: React.FC = () => {
               return {}
             }
             const res = await getProjectServiceDetails(uuid, {
-              type: upperCaseType,
+              // type: upperCaseType,
               operate: upperCaseOperate,
-              projectKey: key
+              projectKey: projectKey
             })
             if (res && res.success && res.data) {
-              setUriPrefix(strToUri(res.data?.domain))
+              setUriPrefix(strToUri(res.data?.control))
               return res.data;
             }
 
@@ -152,55 +134,17 @@ const ProjectServiceDetailsPage: React.FC = () => {
                   </Row>
                   <Row>
                     <Col span={24}>
-                      <ProFormText name="enname" label="调用的方法名称" disabled={!editable} tooltip="需要符合Java命名规范"
+                      <ProFormText name="method" label="调用的方法名称" disabled={!editable} tooltip="需要符合Java命名规范"
                                    fieldProps={{
                                      onBlur: () => {
-                                       const enname = formRef.current?.getFieldValue('enname')
-                                       formRef.current?.setFieldValue('uri', strToUri(enname))
+                                       const method = formRef.current?.getFieldValue('method')
+                                       formRef.current?.setFieldValue('uri', strToUri(method))
                                      }
                                    }}
                                    rules={[{required: true,},]}/>
                     </Col>
                   </Row>
-                  <Row>
-                    <Col span={24}>
-                      <ProFormSelect
-                        rules={[{required: true,},]}
-                        tooltip="无需也不建议添加Service之类的作为后缀"
-                        options={items}
-                        name="domain"
-                        label="归属领域"
-                        disabled={!editable}
-                        fieldProps={{
-                          onChange: (domain) => {
-                            setUriPrefix(strToUri(domain))
-                          },
-                          dropdownRender: (menu) => (
-                            <>
-                              {menu}
-                              <Divider style={
-                                {margin: '8px 0'}
-                              }/>
-                              <div style={
-                                {padding: '0 8px 4px', display: 'flex',}
-                              }>
-                                <Input
-                                  placeholder="新建领域"
-                                  ref={inputRef}
-                                  value={name}
-                                  onChange={onNameChange}
-                                />
-                                <Button type="text" icon={<PlusOutlined/>} onClick={addItem}>
-                                  新增领域
-                                </Button>
-                              </div>
-                            </>
-                          )
-                        }}
-                      />
-                    </Col>
-                  </Row>
-                  <Row hidden={!(upperCaseType === ServiceTypes.API.key)}>
+                  <Row hidden={!("API" === ServiceTypes.API.key)}>
                     <Col span={24}>
                       <ProFormText name="uri" label="请求路径" tooltip="uri正常会通过方法名称生成，如特殊需要请点编辑自行设置" disabled={uriDisabled}
                                    rules={[{required: true,},]}
@@ -221,9 +165,9 @@ const ProjectServiceDetailsPage: React.FC = () => {
                   </Row>
                 </Col>
                 <Col span={14} offset={2}>
-                  <Row>
-                    {
-                      upperCaseType === ServiceTypes.RPC.key ? <></> : <Col span={8}>
+                  {
+                    "API" === ServiceTypes.RPC.key ? <></> : <Row>
+                      <Col span={10}>
                         <ProFormRadio.Group
                           disabled={!editable}
                           label="请求类型"
@@ -234,37 +178,19 @@ const ProjectServiceDetailsPage: React.FC = () => {
                           options={RequestTypeOptions}
                         />
                       </Col>
-                    }
-
-                    <Col span={8}>
-                      <ProFormRadio.Group
-                        disabled={!editable}
-                        label="接口行为"
-                        tooltip="接口在系统中将会作为什么业务开发？这"
-                        name="behavior"
-                        initialValue="QRY"
-                        radioType="button"
-                        fieldProps={{buttonStyle: "solid"}}
-                        options={ServiceBehaviorOptions}
-                      />
-                    </Col>
-                  </Row>
-                  {
-                    upperCaseType === ServiceTypes.RPC.key ? <></> : <Row>
-                      <Col span={16}>
-                        <Col span={24}>
-                          <ProFormText name="identifier" disabled={!editable} label="标识符"
-                                       tooltip="授权码结构：${项目}:${领域}:${标识符} (此处仅填写标识符)"
-                                       rules={[{required: true,},]}/>
-                        </Col>
+                      <Col span={7} offset={1}>
+                        <ProFormText name="identifier" disabled={!editable} label="标识符"
+                                     tooltip="授权码结构：${项目}:${领域}:${标识符} (此处仅填写标识符)"
+                                     rules={[{required: true,},]}/>
                       </Col>
                     </Row>
                   }
 
                   <Row>
-                    <Col span={16}>
+                    <Col span={20}>
                       <ProFormTextArea
-                        name="describe"
+                        width="xl"
+                        name="description"
                         label="接口介绍"
                         placeholder="请输入介绍"
                       />
@@ -274,60 +200,20 @@ const ProjectServiceDetailsPage: React.FC = () => {
               </Row>
             </ProCard>
 
-            {
-              upperCaseType === ServiceTypes.RPC.key ? <></> :
-                <ProCard title="请求参数" tooltip="接收请求参数的数据，除路径，特殊参数外，多个参数会被合并成一个单独的对象" bordered onBlur={pathHandler}>
-                  <ProFormList
-                    name="requestParams"
-                    actionRef={paramActionRef}
-                    initialValue={[]}
-                    copyIconProps={OperateTypes[upperCaseOperate]?.readonly ? false : {
-                      tooltipText: '复制此行到末尾',
-                    }}
-                    deleteIconProps={OperateTypes[upperCaseOperate]?.readonly ? false : {
-                      tooltipText: '不需要这行了',
-                    }}
-                    creatorButtonProps={OperateTypes[upperCaseOperate]?.readonly ? false : {creatorButtonText: "新增字段"}}
-                  >
-                    <ProFormGroup key="group">
-                      <ProFormText name="fieldName" label="字段名称" rules={[{required: true,},]}/>
-                      <ProFormText name="explain" label="字段说明"/>
-                      <ProFormSelect
-                        rules={[{required: true,},]}
-                        initialValue={'String'}
-                        options={fields}
-                        width="xs"
-                        name="fieldType"
-                        label="字段类型"
-                      />
-                      <ProFormSelect
-                        rules={[{required: true,},]}
-                        initialValue={'NONE'}
-                        options={[...BaseGenerics, PathVariableItem,]}
-                        width="xs"
-                        name="generic"
-                        tooltip='其中路径参数需要是JAVA基本数据类型，非基本类型不生效'
-                        label="泛型/特定类型"
-                        fieldProps={{
-                          onChange: (value) => {
-                            console.log(value)
-
-                          }
-                        }}
-                      />
-                      <ProFormSwitch name="nonNull" label="非空"/>
-                      <ProFormText name="mock" label="模拟数据"/>
-                      <ProFormText name="rule" tooltip='规则必须为json格式：{"max":100,"min":30} -  更多查看文档' label="规则"/>
-
-                    </ProFormGroup>
-                  </ProFormList>
-                </ProCard>
-            }
-
-            <ProCard title={upperCaseType === ServiceTypes.RPC.key ? "请求参数" : "请求体(JSON)"}
-                     tooltip="接收请求体的数据，除路径，特殊参数外，多个参数会被合并成一个单独的对象" bordered>
+            <ProCard title="请求参数" tooltip="接收请求参数的数据，除路径，特殊参数外，多个参数会被合并成一个单独的对象"
+                     extra={
+                       <ProFormRadio.Group
+                         name="requestMode"
+                         initialValue="FORM"
+                         radioType="button"
+                         fieldProps={{buttonStyle: "solid"}}
+                         options={RequestModeOptions}
+                       />
+                     }
+                     bordered onBlur={pathHandler}>
               <ProFormList
-                name="requestBodys"
+                name="requests"
+                actionRef={paramActionRef}
                 initialValue={[]}
                 copyIconProps={OperateTypes[upperCaseOperate]?.readonly ? false : {
                   tooltipText: '复制此行到末尾',
@@ -351,19 +237,33 @@ const ProjectServiceDetailsPage: React.FC = () => {
                   <ProFormSelect
                     rules={[{required: true,},]}
                     initialValue={'NONE'}
-                    options={BaseGenerics}
+                    options={[...BaseGenerics, PathVariableItem, RequestBodyItem]}
                     width="xs"
                     name="generic"
-                    label="泛型"
+                    tooltip='其中路径参数需要是JAVA基本数据类型，非基本类型不生效'
+                    label="泛型/特殊"
+                    fieldProps={{
+                      onChange: (value) => {
+                        console.log(value)
+
+                      }
+                    }}
                   />
-                  <ProFormSwitch name="nonNull" label="是否非空"/>
-                  <ProFormText name="mock" label="模拟数据"/>
+                  <ProFormSwitch name="nonNull" label="非空"/>
                   <ProFormText name="rule" tooltip='规则必须为json格式：{"max":100,"min":30} -  更多查看文档' label="规则"/>
 
                 </ProFormGroup>
               </ProFormList>
             </ProCard>
-            <ProCard title="答复数据" tooltip="所有参数会合并成一个对象包装返回，建议先建立模型" bordered>
+
+            <ProCard title="响应数据" tooltip="所有参数会合并成一个对象包装返回，建议先建立模型" bordered
+                     extra={
+                       <ProFormSwitch name="responseMode" fieldProps={{
+                         checkedChildren: "合并",
+                         unCheckedChildren: "单参"
+                       }}/>
+                     }
+            >
               <ProFormList
                 name="responses"
                 initialValue={[]}

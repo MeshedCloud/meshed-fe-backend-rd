@@ -1,8 +1,8 @@
 import {ProList} from '@ant-design/pro-components';
 import {Button, Space, Tag} from 'antd';
 import React, {useEffect, useState} from 'react';
-import {ApprovalTypes} from "@/services/project/constant";
-import {getProjectModelCount, getProjectModelList,} from '@/services/project/api';
+import {ReleaseStatus} from "@/services/project/constant";
+import {getProjectModelList, getProjectModelReleaseCount,} from '@/services/project/api';
 import {renderBadge} from "@/common/common";
 import CheckCardModal from "@/components/CheckCardModal";
 import {PlusOutlined} from "@ant-design/icons";
@@ -14,23 +14,23 @@ const ProjectModelPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('RELEASE');
   const [menuTabs, setMenuTabs] = useState<{ key: string; label: JSX.Element; }[]>();
   useEffect(() => {
-    getProjectModelCount(projectKey, {}).then(res => {
+    getProjectModelReleaseCount(projectKey, {}).then(res => {
       if (res && res.success) {
         const countData = res.data;
         const approvalTypes: { key: string; label: JSX.Element; }[] = []
-        Object.keys(ApprovalTypes).map(item => {
+        Object.keys(ReleaseStatus).map(item => {
           approvalTypes.push(
             {
               key: item,
               label:
-                <span>{ApprovalTypes[item].text}{renderBadge(countData ? countData[item.toLowerCase()] : 0, activeKey === item)}</span>,
+                <span>{ReleaseStatus[item].text}{renderBadge(countData ? countData[item.toLowerCase()] : 0, activeKey === item)}</span>,
             },
           )
         })
         setMenuTabs(approvalTypes)
       }
     })
-  });
+  }, []);
   return (
     <ProList<any>
       rowKey="name"

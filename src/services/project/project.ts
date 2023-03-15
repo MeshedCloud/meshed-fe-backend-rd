@@ -8,20 +8,20 @@ export class Project {
   version: string | undefined;
   owner: string | undefined;
   accessMode: string | undefined;
-  detail: string | undefined;
-  createTime: string | undefined;
-  updateTime: string | undefined;
+  description: string | undefined;
 }
 
 export class ProjectCmd {
-  id!: number;
-  name: number | undefined;
+  uuid: string | undefined;
+  name: string | undefined;
   key: string | undefined;
   type: string | undefined;
+  accessMode: string | undefined;
   pageTemplate: string | undefined;
   serviceTemplate: string | undefined;
-  createTime: string | undefined;
-  updateTime: string | undefined;
+  needMysql: boolean | undefined;
+  needRedis: boolean | undefined;
+  description: string | undefined;
 }
 
 export class ProjectDetail extends Project {
@@ -94,8 +94,12 @@ export const ServiceTemplateEnum = {
 }
 
 export const ProjectAccessModeEnum = {
+  PUBLIC: {
+    text: '开源项目',
+    status: 'Processing',
+  },
   NORMAL: {
-    text: '研发项目',
+    text: '正常研发',
     status: 'Processing',
   },
   CORE: {

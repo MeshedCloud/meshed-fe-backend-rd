@@ -51,7 +51,7 @@ const ProjectWarehousePage: React.FC<{ projectKey: string }> = ({projectKey}) =>
     const params: any = Object.assign({}, filtersInitialValues);
     setFilterParams(params)
     getList(params);
-  });
+  }, []);
   return (
     <ProCard style={{minHeight: 700}}>
       <div

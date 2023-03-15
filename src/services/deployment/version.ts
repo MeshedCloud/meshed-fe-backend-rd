@@ -17,9 +17,9 @@ export class VersionCount {
 }
 
 export const VersionTypes = {
-  RELEASE: {
+  MAVEN: {
     color: '#2db7f5',
-    text: '发行版'
+    text: '服务'
   },
   PAGE: {
     color: '#87d068',

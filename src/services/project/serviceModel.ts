@@ -21,11 +21,13 @@ export class ResponsesField extends BaseField {
 
 export class ProjectModel {
   id!: number;
-  name: number | undefined;
+  uuid!: string;
+  name: string | undefined;
   className: string | undefined;
   version: string | undefined;
   type: string | undefined;
   status: string | undefined;
+  releaseStatus: string | undefined;
 }
 
 export class ProjectModelDetails {
@@ -35,7 +37,10 @@ export class ProjectModelDetails {
   className: string | undefined;
   version: string | undefined;
   type: string | undefined;
+  fields: RequestParamField[] | undefined;
   status: string | undefined;
+  releaseStatus: string | undefined;
+  description: string | undefined;
 }
 
 export class ProjectModelCount {
@@ -49,20 +54,35 @@ export class ProjectModelCount {
 }
 
 
+export class ProjectServiceGroup {
+  uuid!: string;
+  groupId!: string;
+  name: string | undefined;
+  className: string | undefined;
+  type: string | undefined;
+  uri: string | undefined;
+  packageName: string | undefined;
+  domainKey: string | undefined;
+  projectKey: string | undefined;
+  description: string | undefined;
+}
+
+
 export class ProjectService {
-  id!: number;
-  name: number | undefined;
-  api: string | undefined;
+  uuid!: string;
+  name: string | undefined;
+  groupId: string | undefined;
   version: string | undefined;
   type: string | undefined;
   status: string | undefined;
-  progress: string | undefined;
+  releaseStatus: string | undefined;
 }
 
 export class ProjectServiceDetails {
   id!: number;
   name: number | undefined;
-  enname: string | undefined;
+  method: string | undefined;
+  control: string | undefined;
   uri: string | undefined;
   domain: string | undefined;
   requestType: string | undefined;
@@ -127,11 +147,25 @@ export const ModelTypes = {
     description: '数据作为内部传输和返回外部数据模型的数据结构',
     name: 'DTO'
   },
+  ENUM: {
+    color: '#108ee9',
+    text: '枚举',
+    avatar: 'https://s.meshed.cn/meshed/svg/model.svg',
+    description: '数据作为内部传输和返回外部数据模型的数据结构',
+    name: 'DTO'
+  },
+  EVENT: {
+    color: '#108ee9',
+    text: '事件',
+    avatar: 'https://s.meshed.cn/meshed/svg/model.svg',
+    description: '数据作为内部传输和返回外部数据模型的数据结构',
+    name: 'DTO'
+  },
 
 }
 
 export const ServiceStatus = {
-  PROD: {
+  RELEASE: {
     color: '#2db7f5',
     text: '已上线'
   },
@@ -150,6 +184,10 @@ export const ServiceStatus = {
   BUG: {
     color: '#f50',
     text: '异常'
+  },
+  OFF: {
+    color: '#ded9d9',
+    text: '下线'
   },
 }
 
@@ -194,20 +232,26 @@ export const RequestTypeOptions = [
   },
 
 ]
-export const ServiceBehaviorOptions = [
+export const RequestModeOptions = [
+  {
+    label: '参数',
+    value: 'PARAM',
+  },
+  {
+    label: '表单',
+    value: 'FORM',
+  },
+  {
+    label: 'JSON',
+    value: 'JSON',
+  },
 
   {
-    label: '查询',
-    value: 'QRY',
-  },
-  {
-    label: '操作',
-    value: 'CMD',
-  },
-  {
-    label: '分页查询',
+    label: '分页',
     value: 'PAGE',
   },
 ]
 
+
 export const PathVariableItem = {value: 'PATH_VARIABLE', label: '路径参数',}
+export const RequestBodyItem = {value: 'REQUEST_BODY', label: 'JSON',}

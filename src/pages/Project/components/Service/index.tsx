@@ -2,13 +2,12 @@ import {ProList} from '@ant-design/pro-components';
 import type {RadioChangeEvent} from 'antd';
 import {Button, Radio, Space, Tag} from 'antd';
 import React, {useEffect, useState} from 'react';
-import {ApprovalTypes} from "@/services/project/constant";
-import {getProjectServiceCount, getProjectServiceList} from '@/services/project/api';
+import {ReleaseStatus} from "@/services/project/constant";
+import {getProjectServiceList, getProjectServiceReleaseCount} from '@/services/project/api';
 import {renderBadge} from "@/common/common";
-import CheckCardModal from "@/components/CheckCardModal";
-import {PlusOutlined} from "@ant-design/icons";
 import {history} from 'umi';
 import {ServiceStatus, ServiceTypes} from "@/services/project/serviceModel";
+import ServiceAddForm from "@/pages/Project/components/Service/components/ServiceAddForm";
 
 
 const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
@@ -19,16 +18,16 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
 
   console.log("ProjectServicePage", projectKey)
   useEffect(() => {
-    getProjectServiceCount(projectKey, {}).then(res => {
+    getProjectServiceReleaseCount(projectKey, {}).then(res => {
       if (res && res.success) {
         const countData = res.data;
         const approvalTypes: { key: string; label: JSX.Element; }[] = []
-        Object.keys(ApprovalTypes).map(typeKey => {
+        Object.keys(ReleaseStatus).map(typeKey => {
           approvalTypes.push(
             {
               key: typeKey,
               label:
-                <span>{ApprovalTypes[typeKey].text}{renderBadge(countData ? countData[typeKey.toLowerCase()] : 0, activeKey === typeKey)}</span>,
+                <span>{ReleaseStatus[typeKey].text}{renderBadge(countData ? countData[typeKey.toLowerCase()] : 0, activeKey === typeKey)}</span>,
             },
           )
         })
@@ -51,24 +50,32 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
         setMenuTabs(approvalTypes)
       }
     })
-  });
+  }, []);
   return (
     <ProList<any>
       rowKey="name"
       request={(params => getProjectServiceList(projectKey, params))}
       metas={{
         title: {
-          dataIndex: 'name',
+          render: (_, row) => {
+            return (
+              <Button size="small" type="link" onClick={() => {
+                history.push({
+                  pathname: `/project/service/${projectKey}/read/${row.groupId}/${row.uuid}`
+                })
+              }}>{row.name}</Button>
+            )
+          }
         },
         description: {
-          dataIndex: 'api',
+          dataIndex: 'uri',
         },
         subTitle: {
           render: (_, row) => {
             return (
               <Space size={0}>
                 <Tag color={ServiceTypes[row.type]?.color}>{ServiceTypes[row.type]?.text}</Tag>
-                <Tag color={ServiceStatus[row.progress]?.color}>{ServiceStatus[row.progress]?.text}</Tag>
+                <Tag color={ServiceStatus[row.status]?.color}>{ServiceStatus[row.status]?.text}</Tag>
               </Space>
             );
           },
@@ -97,12 +104,12 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
           render: (text, row) => [
             <Button size="small" type="link" onClick={() => {
               history.push({
-                pathname: `/project/${projectKey}/service/${row.type}/edit/${row.uuid}`
+                pathname: `/project/service/${projectKey}/edit/${row.groupId}/${row.uuid}`
               })
             }}>副本编辑</Button>,
             <Button size="small" type="link" onClick={() => {
               history.push({
-                pathname: `/project/${projectKey}/service/${row.type}/copy/${row.uuid}`
+                pathname: `/project/service/${projectKey}/copy/${row.groupId}/${row.uuid}`
               })
             }}>复制</Button>,
             <Button size="small" type="link" onClick={() => {
@@ -134,12 +141,7 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
             optionType="button"
             buttonStyle="solid"
           />,
-          <CheckCardModal title="新建接口" data={ServiceTypes} defaultValue="API" action={<><PlusOutlined/>新建接口</>}
-                          onFinish={(value => {
-                            history.push({
-                              pathname: `/project/${projectKey}/service/${value}/new/init`
-                            })
-                          })}/>,
+          <ServiceAddForm projectKey={projectKey} operate="new" uuid="init"/>
         ],
       }}
       pagination={{

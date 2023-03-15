@@ -162,7 +162,7 @@ const CreateProject: React.FC = () => {
               options={ProjectAccessModeOptions}
             />
             <ProFormText name="name" label="名称" placeholder="请输入名称" rules={[{required: true,},]}/>
-            <ProFormText name="enname" label="代号" tooltip="代号指代项目英文简写" placeholder="请输入代号"
+            <ProFormText name="key" label="代号" tooltip="代号指代项目英文简写" placeholder="请输入代号"
                          rules={[{required: true,},]}/>
 
             <ProForm.Group title="数据源">
@@ -171,7 +171,7 @@ const CreateProject: React.FC = () => {
 
             </ProForm.Group>
             <ProFormTextArea
-              name="describe"
+              name="description"
               label="立项缘由"
               placeholder="请输入立项缘由"
               rules={[{required: true,},]}

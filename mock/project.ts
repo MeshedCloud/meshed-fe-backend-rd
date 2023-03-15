@@ -123,7 +123,7 @@ const getProjectServiceList = (req: Request, res: Response) => {
         api: '/rd/project/list',
         type: 'API',
         status: 'DEV',
-        progress: 'DEV',
+        releaseStatus: 'DEV',
         version: '1.0.2',
       },
       {
@@ -132,8 +132,8 @@ const getProjectServiceList = (req: Request, res: Response) => {
         name: '研发项目详情',
         api: '/rd/project/desc',
         type: 'API',
-        status: 'PROD',
-        progress: 'PROD',
+        status: 'RELEASE',
+        releaseStatus: 'RELEASE',
         version: '1.0.2',
       },
       {
@@ -143,7 +143,7 @@ const getProjectServiceList = (req: Request, res: Response) => {
         api: '/rd/project/list',
         type: 'RPC',
         status: 'DEV',
-        progress: 'DEV',
+        releaseStatus: 'DEV',
         version: '1.0.2',
       },
       {
@@ -153,7 +153,7 @@ const getProjectServiceList = (req: Request, res: Response) => {
         api: '/rd/project/desc',
         type: 'API',
         status: 'TEST',
-        progress: 'TEST',
+        releaseStatus: 'TEST',
         version: '1.0.2',
       },
       {
@@ -163,7 +163,7 @@ const getProjectServiceList = (req: Request, res: Response) => {
         api: 'ProjectService#getList',
         type: 'RPC',
         status: 'DEV',
-        progress: 'DEV',
+        releaseStatus: 'DEV',
         version: '1.0.2',
       },
       {
@@ -173,7 +173,7 @@ const getProjectServiceList = (req: Request, res: Response) => {
         api: '/rd/project/desc',
         type: 'API',
         status: 'DEV',
-        progress: 'DEV',
+        releaseStatus: 'DEV',
         version: '1.0.2',
       },
     ],
@@ -407,7 +407,7 @@ const getProjectVersionList = (req: Request, res: Response) => {
 };
 
 
-const getProjectServiceData = (req: Request, res: Response) => {
+const getProjectServiceReleaseCount = (req: Request, res: Response) => {
   res.json({
     success: true,
     errCode: null,
@@ -440,7 +440,7 @@ const getProjectVersionData = (req: Request, res: Response) => {
   });
 };
 
-const getProjectModelData = (req: Request, res: Response) => {
+const getProjectModelReleaseCount = (req: Request, res: Response) => {
   res.json({
     success: true,
     errCode: null,
@@ -503,13 +503,14 @@ const getProjectServiceDetails = (req: Request, res: Response) => {
     errMessage: null,
     data: {
       "name": "获取项目列表",
-      "enname": "list",
+      "method": "list",
+      "control": "Project",
       "domain": "Project",
       "uri": "/list/{uuid}",
       "requestType": "GET",
       "behavior": "QRY",
       "identifier": "list",
-      "describe": "查询项目列表",
+      "description": "查询项目列表",
       "requestParams": [
         {
           "fieldType": "String",
@@ -556,7 +557,7 @@ const getProjectModelDetails = (req: Request, res: Response) => {
     data: {
       "name": "项目模型",
       "enname": "Axxx",
-      "describe": "xxxx",
+      "description": "xxxx",
       "fields": [
         {
           "fieldType": "String",
@@ -583,19 +584,19 @@ const saveProjectModel = (req: Request, res: Response) => {
 
 export default {
   'GET /api/rd/project/list': getProjectList,
-  'GET /api/rd/project/service/list/*': getProjectServiceList,
-  'GET /api/rd/project/service/count/*': getProjectServiceData,
-  'GET /api/rd/project/service/details/*': getProjectServiceDetails,
-  'GET /api/rd/project/service/domain/select/*': getProjectServiceDomainSelect,
-  'POST /api/rd/project/service/save': saveProjectService,
-  'GET /api/rd/project/model/list/*': getProjectModelList,
-  'GET /api/rd/project/model/count/*': getProjectModelData,
-  'GET /api/rd/project/model/details/*': getProjectModelDetails,
-  'GET /api/rd/project/model/field/select/*': getProjectModelFieldSelect,
-  'POST /api/rd/project/model/save': saveProjectModel,
-  'GET /api/rd/project/warehouse/list/*': getProjectWarehouseList,
-  'GET /api/rd/project/version/list/*': getProjectVersionList,
-  'GET /api/rd/project/version/count/*': getProjectVersionData,
+  'GET /api/rd/service/list/*': getProjectServiceList,
+  'GET /api/rd/service/release/count/*': getProjectServiceReleaseCount,
+  'GET /api/rd/service/details/*': getProjectServiceDetails,
+  'GET /api/rd/service/domain/select/*': getProjectServiceDomainSelect,
+  'POST /api/rd/service/save': saveProjectService,
+  'GET /api/rd/model/list/*': getProjectModelList,
+  'GET /api/rd/model/release/count/*': getProjectModelReleaseCount,
+  'GET /api/rd/model/details/*': getProjectModelDetails,
+  'GET /api/rd/model/select/*': getProjectModelFieldSelect,
+  'POST /api/rd/model/save': saveProjectModel,
+  'GET /api/rd/warehouse/list/*': getProjectWarehouseList,
+  'GET /api/rd/version/list/*': getProjectVersionList,
+  'GET /api/rd/version/count/*': getProjectVersionData,
   'GET /api/rd/project/details/*': getProjectDetails,
   'POST /api/rd/project/save': saveProject,
   'DELETE /api/rd/project/delete/*': deleteProject,

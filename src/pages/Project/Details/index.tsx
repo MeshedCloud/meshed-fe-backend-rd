@@ -78,7 +78,7 @@ const ProjectDetails: React.FC = () => {
 
   useEffect(() => {
     getProjectDetailsData(projectKey);
-  });
+  }, []);
 
   return (
     <PageContainer
@@ -122,7 +122,7 @@ const ProjectDetails: React.FC = () => {
 
 
               <ProDescriptions.Item label="项目描述" span={2} valueType="text">
-                {data?.detail}
+                {data?.description}
               </ProDescriptions.Item>
             </ProDescriptions>
             <Link to={`/project`}><ArrowLeftOutlined/>前往项目页</Link>
