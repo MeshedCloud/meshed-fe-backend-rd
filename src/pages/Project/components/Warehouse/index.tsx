@@ -1,144 +1,86 @@
-import React, {useEffect, useState} from 'react';
-import {LightFilter, ProCard, ProFormSelect} from "@ant-design/pro-components";
-import {FilterOutlined} from "_@ant-design_icons@4.7.0@@ant-design/icons";
-import {Button, Input, Pagination} from "_antd@4.24.2@antd";
-import {Space} from "antd";
-import {BranchesOutlined, CopyOutlined, EllipsisOutlined} from "@ant-design/icons";
+import React from 'react';
+import {ProCard, ProList} from "@ant-design/pro-components";
+import {Button, Space} from "antd";
 import Tag from 'antd/es/tag';
-import type {Warehouse} from "@/services/deployment/warehouse";
 import {WarehouseTypes} from "@/services/deployment/warehouse";
 import {getProjectWarehouseList} from "@/services/deployment/api";
+import {ForkOutlined, LinkOutlined, PullRequestOutlined} from "@ant-design/icons";
+import WarehouseAddForm from "@/pages/Project/components/Warehouse/components/WarehouseAddForm";
 
-const pageSize = 20;
-const filtersInitialValues = {type: 'all', domain: 'all'}
 
 const ProjectWarehousePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
 
-  const [dataSource, setDataSource] = useState<Warehouse[]>([]);
-  const [total, setTotal] = useState<number>(0)
-  const [keyword, setKeyword] = useState<string>()
-  const [current, setCurrent] = useState<number>(1)
-  const [filterParams, setFilterParams] = useState<any>({})
-
-  const getList = (params: { pageSize: number, pageIndex: number }, pageIndex?: number,) => {
-    params.pageSize = pageSize;
-    params.pageIndex = pageIndex ? pageIndex : current;
-    getProjectWarehouseList(projectKey, params).then(async res => {
-      if (res.success && res.data) {
-        setDataSource(res.data)
-        setTotal(res.total ? res.total : 0)
-      } else {
-        setTotal(0)
-      }
-    })
-
-  }
-
-  const onSearch = (value: string) => {
-    const params: any = Object.assign({}, filterParams);
-    params.keyword = value;
-    setKeyword(value)
-    getList(params)
-  };
-
-  const onChange = (value: number) => {
-    const params: any = Object.assign({}, filterParams);
-    params.keyword = keyword;
-    setCurrent(value)
-    getList(params, value)
-  };
-  useEffect(() => {
-    const params: any = Object.assign({}, filtersInitialValues);
-    setFilterParams(params)
-    getList(params);
-  }, []);
   return (
-    <ProCard style={{minHeight: 700}}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
+    <ProCard style={{minHeight: 500}}>
+      <ProList<any>
+        pagination={{
+          defaultPageSize: 9,
+          showSizeChanger: false,
         }}
-      >
-        {/*left*/}
-        <div>
-          <LightFilter
-            initialValues={{type: 'all', domain: 'all'}}
-            bordered
-            collapseLabel={<FilterOutlined/>}
-            onFinish={async (values) => {
-              console.log(values)
-            }}
-          >
-            <ProFormSelect
-              name="type"
-              showSearch
-              valueEnum={{
-                all: '全部项目',
-                service: '服务项目',
-              }}
-              placeholder="项目类型"
-            />
-            <ProFormSelect
-              name="domain"
-              showSearch
-              valueEnum={{
-                all: '全部',
-                security: '安全领域',
-                middle: '中台领域',
-                common: '通用领域',
-              }}
-              placeholder="板块"
-            />
-          </LightFilter>
-        </div>
-        {/*right*/}
-        <div
-          style={{
-            display: 'flex',
-          }}
-        >
-          <Input.Search placeholder="搜索项目" onSearch={onSearch} enterButton allowClear/>
-          <Button type="primary" key="primary">
-            新建仓库
-          </Button>,
-        </div>
-      </div>
-      <Space
-        style={{
-          margin: 20, display: 'flex',
-          flexWrap: 'wrap',
-          flexShrink: 0,
-          gap: 30,
+        request={(params) => getProjectWarehouseList(projectKey, {...params})}
+        postData={data => {
+          if (data && data.length > 0) {
+            data.forEach(item => item.avatar = "https://s.meshed.cn/meshed/svg/git.svg")
+          }
+          console.log(data)
+          return data
         }}
-      >
-        {
-          dataSource.map(data => {
-            return <ProCard
-              title={data.name}
-              extra={data.version}
-              style={{minWidth: 320}}
-              bordered
-              actions={[
-                <BranchesOutlined/>,
-                <CopyOutlined/>,
-                <EllipsisOutlined key="ellipsis"/>,
-              ]}
-            >
-              <div><Tag
-                color={WarehouseTypes[data.type].color}>
-                {WarehouseTypes[data.type].text}
-              </Tag>{data.enname}
-              </div>
-            </ProCard>
-          })
+        showActions="hover"
+        rowSelection={{}}
+        grid={{gutter: 16, column: 3}}
+        onItem={(record: any) => {
+          return {
+            onMouseEnter: () => {
+              console.log(record);
+            },
+            onClick: () => {
+              console.log(record);
+            },
+          };
+        }}
+        metas={{
+          title: {
+            dataIndex: 'name',
+          },
+          subTitle: {
+            render: (_, row) => {
+              return (
+                <Space size={0}>
+                  <Tag color={WarehouseTypes[row.type]?.color}>{WarehouseTypes[row.type]?.text}</Tag>
+                </Space>
+              );
+            }
+          },
+          type: {
+            dataIndex: 'type',
+          },
+          content: {
+            dataIndex: 'repoName',
+          },
+          avatar: {
+            dataIndex: 'avatar',
+          },
+          actions: {
+            cardActionProps: 'actions',
+            render: (text, row) => [
+              <Button size="small" type="link" icon={<ForkOutlined/>} onClick={() => {
+
+              }}>分支</Button>,
+              <Button size="small" type="link" icon={<PullRequestOutlined/>} onClick={() => {
+
+              }}>PR</Button>,
+              <Button size="small" type="link" icon={<LinkOutlined/>} onClick={() => {
+
+              }}>HTTPS</Button>
+            ],
+          },
+        }}
+        headerTitle="项目仓库"
+        toolBarRender={() => [
+          <WarehouseAddForm projectKey={projectKey}/>
+        ]
         }
-      </Space>
-      {
-        (total > pageSize ?
-          <Pagination style={{marginTop: 50, marginBottom: 50,}} onChange={onChange} size="small" total={total}
-                      defaultPageSize={pageSize}/> : '')
-      }
+      />
     </ProCard>
   );
 };

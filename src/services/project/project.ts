@@ -5,7 +5,7 @@ export class Project {
   key!: string | undefined;
   type: string | undefined;
   status: string | undefined;
-  version: string | undefined;
+  version: number | undefined;
   owner: string | undefined;
   accessMode: string | undefined;
   description: string | undefined;
@@ -145,3 +145,4 @@ export const ProjectAccessModeOptions = [
     value: 'CORE',
   },
 ]
+

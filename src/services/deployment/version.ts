@@ -16,26 +16,38 @@ export class VersionCount {
   client!: number;
 }
 
+export class VersionCmd {
+  versionId?: number;
+  projectKey!: string;
+  environment!: string;
+  version: string | undefined;
+  purposeType!: string;
+  warehouseId!: string;
+  commitMessage!: string;
+}
+
 export const VersionTypes = {
   MAVEN: {
     color: '#2db7f5',
-    text: '服务'
+    text: '制品'
+  },
+  IMAGES: {
+    color: '#87d068',
+    text: '镜像'
   },
   PAGE: {
     color: '#87d068',
-    text: '前端'
-  },
-  CONSOLE: {
-    color: '#87d068',
-    text: '控制台'
-  },
-  CLIENT: {
-    color: '#108ee9',
-    text: '客户端'
-  },
-  ASSEMBLY: {
-    color: '#FA8072',
-    text: '组件'
+    text: '页面'
   },
 }
 
+export const MavenEnvironmentOptions = [
+  {
+    label: '快照版本',
+    value: 'SNAPSHOT',
+  },
+  {
+    label: '正式发行',
+    value: 'RELEASE',
+  },
+]

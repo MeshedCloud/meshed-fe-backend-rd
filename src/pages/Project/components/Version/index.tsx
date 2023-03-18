@@ -1,35 +1,13 @@
 import {ProList} from '@ant-design/pro-components';
-import {Button, Space, Tag} from 'antd';
-import React, {useEffect, useState} from 'react';
-import {getProjectVersionCount, getProjectVersionList} from '@/services/deployment/api';
-import {renderBadge} from "@/common/common";
-import {WarehouseTypes} from "@/services/deployment/warehouse";
+import {Space, Tag} from 'antd';
+import React from 'react';
+import {getProjectVersionList} from '@/services/deployment/api';
+import VersionPublishForm from "@/pages/Project/components/Version/components/VersionPublishForm";
+import {convertVersion} from "@/common/utils";
+import {VersionTypes} from "@/services/deployment/version";
 
 
 const ProjectVersionPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
-  const [activeKey, setActiveKey] = useState<React.Key | undefined>('ALL');
-  const [menuTabs, setMenuTabs] = useState<{ key: string; label: JSX.Element; }[]>();
-  useEffect(() => {
-    getProjectVersionCount(projectKey, {}).then(res => {
-      if (res && res.success) {
-        const countData = res.data;
-        const tabs = [{
-          key: 'ALL',
-          label: <span>全部项目{renderBadge(countData ? countData.all : 0, activeKey === 'ALL')}</span>,
-        }]
-        Object.keys(WarehouseTypes).map(key => {
-          tabs.push(
-            {
-              key,
-              label:
-                <span>{WarehouseTypes[key].text}{renderBadge(countData ? countData[key.toLowerCase()] : 0, activeKey === key)}</span>,
-            },
-          )
-        })
-        setMenuTabs(tabs)
-      }
-    })
-  }, []);
   return (
     <ProList<any>
       rowKey="name"
@@ -39,13 +17,13 @@ const ProjectVersionPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
           dataIndex: 'name',
         },
         description: {
-          dataIndex: 'enname',
+          dataIndex: 'versionName',
         },
         subTitle: {
           render: (_, row) => {
             return (
               <Space size={0}>
-                <Tag color={WarehouseTypes[row.type]?.color}>{WarehouseTypes[row.type]?.text}</Tag>
+                <Tag color={VersionTypes[row.type]?.color}>{VersionTypes[row.type]?.text}</Tag>
 
               </Space>
             );
@@ -66,42 +44,21 @@ const ProjectVersionPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
                   width: '200px',
                 }}
               >
-                {row.version}
+                {convertVersion(row.version)}
               </div>
             </div>
           ),
         },
         actions: {
           render: (text, row) => [
-            <a href={row.html_url} target="_blank" rel="noopener noreferrer" key="link">
-              编辑
-            </a>,
-            <a href={row.html_url} target="_blank" rel="noopener noreferrer" key="warning">
-              复制
-            </a>,
-            <a href={row.html_url} target="_blank" rel="noopener noreferrer" key="view">
-              删除
-            </a>,
+            <VersionPublishForm operate="edit" projectKey={projectKey} versionId={row.id}
+                                sourceId={row.sourceId} version={convertVersion(row.version)}/>,
           ],
         },
       }}
       toolbar={{
-        menu: {
-          activeKey,
-          items: menuTabs,
-          onChange(key) {
-            setActiveKey(key);
-          },
-        },
-        search: {
-          onSearch: (value: string) => {
-            alert(value);
-          },
-        },
         actions: [
-          <Button type="primary" key="primary">
-            发布版本
-          </Button>,
+          <VersionPublishForm operate="new" projectKey={projectKey}/>
         ],
       }}
       pagination={{

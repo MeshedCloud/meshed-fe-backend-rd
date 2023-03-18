@@ -109,6 +109,13 @@ export class ProjectServiceCount {
 }
 
 export const BaseFields = ['String', 'Integer', 'Long', 'Double', 'Float', 'Boolean']
+export const BaseSuperClass = ['DTO', 'Query', 'Command', 'Double', 'PageQuery', 'Event', 'SecurityEvent']
+export const TypeToSuperClassMap = {
+  'DTO': 'DTO',
+  'QUERY': 'Query',
+  'COMMAND': 'Command',
+  'EVENT': 'Event',
+}
 export const BaseGenerics = [
   {
     value: 'NONE',
@@ -126,14 +133,14 @@ export const BaseGenerics = [
 
 export const ModelTypes = {
 
-  CMD: {
+  COMMAND: {
     color: '#2db7f5',
     text: '操作',
     avatar: 'https://s.meshed.cn/meshed/svg/cmd.svg',
     description: '系统模型遵循CQRS模式下的行为规范，读写分离，如果作为操作模型选择',
     name: 'Cmd'
   },
-  QRY: {
+  QUERY: {
     color: '#5BD8A6',
     text: '查询',
     avatar: 'https://s.meshed.cn/meshed/svg/query.svg',
@@ -151,15 +158,15 @@ export const ModelTypes = {
     color: '#108ee9',
     text: '枚举',
     avatar: 'https://s.meshed.cn/meshed/svg/model.svg',
-    description: '数据作为内部传输和返回外部数据模型的数据结构',
-    name: 'DTO'
+    description: '枚举类型，提高代码维护性，确保变量合法',
+    name: 'Enum'
   },
   EVENT: {
     color: '#108ee9',
     text: '事件',
     avatar: 'https://s.meshed.cn/meshed/svg/model.svg',
-    description: '数据作为内部传输和返回外部数据模型的数据结构',
-    name: 'DTO'
+    description: '事件数据，主要用于定义事件传递模型的数据对象',
+    name: 'Event'
   },
 
 }
@@ -210,6 +217,35 @@ export const ServiceTypes = {
 
 }
 
+export const RequestTypes = {
+
+  GET: {
+    color: '#009966',
+    text: 'GET',
+  },
+  POST: {
+    color: '#FFCC33',
+    text: 'POST',
+  },
+  PUT: {
+    color: '#FF6666',
+    text: 'PUT',
+  },
+  DELETE: {
+    color: '#CC3333',
+    text: 'DELETE',
+  },
+  PATCH: {
+    color: '#2db7f5',
+    text: 'PATCH',
+  },
+  RPC: {
+    color: '#FF6600',
+    text: 'RPC',
+  },
+
+}
+
 export const RequestTypeOptions = [
   {
     label: 'Get',
@@ -231,6 +267,20 @@ export const RequestTypeOptions = [
     value: 'PATCH',
   },
 
+]
+export const AccessModeOptions = [
+  {
+    label: '匿名',
+    value: 'ANONYMOUS',
+  },
+  {
+    label: '登入',
+    value: 'LOGIN',
+  },
+  {
+    label: '授权',
+    value: 'AUTHORIZE',
+  },
 ]
 export const RequestModeOptions = [
   {

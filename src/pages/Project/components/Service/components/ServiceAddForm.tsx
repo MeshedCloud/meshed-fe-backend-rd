@@ -105,8 +105,6 @@ export default (props: Props) => {
       }}
       submitTimeout={2000}
       onFinish={async (values) => {
-
-        console.log(values)
         //如果是新建=》 新建分组 =》 跳转
         if (values.groupId == 'NEW') {
           values.projectKey = props.projectKey

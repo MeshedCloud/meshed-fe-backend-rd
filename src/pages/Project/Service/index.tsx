@@ -20,6 +20,7 @@ import {strToUri} from "@/common/uri";
 import {getProjectModelSelect, getProjectServiceDetails, saveProjectService} from "@/services/project/api";
 import type {ProjectServiceDetails} from "@/services/project/serviceModel";
 import {
+  AccessModeOptions,
   BaseFields,
   BaseGenerics,
   PathVariableItem,
@@ -29,6 +30,7 @@ import {
   ServiceTypes
 } from "@/services/project/serviceModel"
 import {OperateEditable, OperateTypes} from "@/services/project/constant";
+import {errorTips} from "@/common/messages";
 
 const ProjectServiceDetailsPage: React.FC = () => {
 // @ts-ignore
@@ -40,6 +42,15 @@ const ProjectServiceDetailsPage: React.FC = () => {
       uuid
     }
   } = useMatch('/project/service/:projectKey/:operate/:groupId/:uuid')
+  if (operate == undefined || OperateTypes[operate.toUpperCase()] == undefined) {
+    errorTips("操作类型错误，联系管理员反馈")
+  }
+  if (groupId == undefined || groupId == "undefined") {
+    errorTips("分组信息丢失，联系管理员反馈")
+  }
+  if (projectKey == undefined || projectKey == "undefined") {
+    errorTips("项目信息丢失，联系管理员反馈")
+  }
   // const upperCaseType = type.toUpperCase()
   const upperCaseOperate = operate.toUpperCase()
   const editable: boolean = OperateEditable.includes(upperCaseOperate)
@@ -78,6 +89,9 @@ const ProjectServiceDetailsPage: React.FC = () => {
     }
     if (upperCaseOperate === 'EDIT') {
       data.uuid = uuid
+    }
+    if (groupId === undefined || groupId === 'undefined') {
+      errorTips("挂载分组失败")
     }
     data.operate = upperCaseOperate
     data.groupId = groupId
@@ -178,13 +192,27 @@ const ProjectServiceDetailsPage: React.FC = () => {
                           options={RequestTypeOptions}
                         />
                       </Col>
-                      <Col span={7} offset={1}>
-                        <ProFormText name="identifier" disabled={!editable} label="标识符"
-                                     tooltip="授权码结构：${项目}:${领域}:${标识符} (此处仅填写标识符)"
-                                     rules={[{required: true,},]}/>
-                      </Col>
                     </Row>
                   }
+
+                  <Row>
+                    <Col span={10}>
+                      <ProFormRadio.Group
+                        disabled={!editable}
+                        label="服务访问权限"
+                        name="accessMode"
+                        initialValue="ANONYMOUS"
+                        radioType="button"
+                        fieldProps={{buttonStyle: "solid"}}
+                        options={AccessModeOptions}
+                      />
+                    </Col>
+                    <Col span={7} offset={1}>
+                      <ProFormText name="identifier" disabled={!editable} label="标识符"
+                                   tooltip="授权码结构：${项目}:${领域}:${标识符} (此处仅填写标识符)"
+                                   rules={[{required: true,},]}/>
+                    </Col>
+                  </Row>
 
                   <Row>
                     <Col span={20}>
@@ -193,6 +221,7 @@ const ProjectServiceDetailsPage: React.FC = () => {
                         name="description"
                         label="接口介绍"
                         placeholder="请输入介绍"
+                        rules={[{required: true,},]}
                       />
                     </Col>
                   </Row>
@@ -208,6 +237,7 @@ const ProjectServiceDetailsPage: React.FC = () => {
                          radioType="button"
                          fieldProps={{buttonStyle: "solid"}}
                          options={RequestModeOptions}
+                         disabled={!editable}
                        />
                      }
                      bordered onBlur={pathHandler}>
@@ -225,7 +255,7 @@ const ProjectServiceDetailsPage: React.FC = () => {
               >
                 <ProFormGroup key="group">
                   <ProFormText name="fieldName" label="字段名称" rules={[{required: true,},]}/>
-                  <ProFormText name="explain" label="字段说明"/>
+                  <ProFormText name="explain" label="字段解释" rules={[{required: true,},]}/>
                   <ProFormSelect
                     rules={[{required: true,},]}
                     initialValue={'String'}
@@ -258,7 +288,7 @@ const ProjectServiceDetailsPage: React.FC = () => {
 
             <ProCard title="响应数据" tooltip="所有参数会合并成一个对象包装返回，建议先建立模型" bordered
                      extra={
-                       <ProFormSwitch name="responseMode" fieldProps={{
+                       <ProFormSwitch name="responseMerge" disabled={!editable} initialValue={true} fieldProps={{
                          checkedChildren: "合并",
                          unCheckedChildren: "单参"
                        }}/>
@@ -277,7 +307,7 @@ const ProjectServiceDetailsPage: React.FC = () => {
               >
                 <ProFormGroup key="group">
                   <ProFormText name="fieldName" label="字段名称" rules={[{required: true,},]}/>
-                  <ProFormText name="explain" label="字段说明"/>
+                  <ProFormText name="explain" label="字段说明" rules={[{required: true,},]}/>
                   <ProFormSelect
                     initialValue={'String'}
                     rules={[{required: true,},]}

@@ -1,22 +1,23 @@
-import {ProList} from '@ant-design/pro-components';
+import {ActionType, ProList} from '@ant-design/pro-components';
 import type {RadioChangeEvent} from 'antd';
 import {Button, Radio, Space, Tag} from 'antd';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {ReleaseStatus} from "@/services/project/constant";
 import {getProjectServiceList, getProjectServiceReleaseCount} from '@/services/project/api';
 import {renderBadge} from "@/common/common";
 import {history} from 'umi';
-import {ServiceStatus, ServiceTypes} from "@/services/project/serviceModel";
+import {RequestTypes, ServiceStatus, ServiceTypes} from "@/services/project/serviceModel";
 import ServiceAddForm from "@/pages/Project/components/Service/components/ServiceAddForm";
+import {convertVersion} from "@/common/utils";
 
 
 const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('RELEASE');
+  const [keyword, setKeyword] = useState<React.Key | undefined>();
+  const [type, setType] = useState<React.Key | undefined>('ALL');
   const [menuTabs, setMenuTabs] = useState<{ key: string; label: JSX.Element; }[]>();
   const [types, setTypes] = useState<any[]>();
-  const [type, setType] = useState<string>('ALL');
-
-  console.log("ProjectServicePage", projectKey)
+  const actionRef = useRef<ActionType>();
   useEffect(() => {
     getProjectServiceReleaseCount(projectKey, {}).then(res => {
       if (res && res.success) {
@@ -54,7 +55,13 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
   return (
     <ProList<any>
       rowKey="name"
-      request={(params => getProjectServiceList(projectKey, params))}
+      actionRef={actionRef}
+      request={(params => getProjectServiceList(projectKey, {
+        ...params,
+        releaseStatus: activeKey,
+        type: type === 'ALL' ? undefined : type,
+        keyword
+      }))}
       metas={{
         title: {
           render: (_, row) => {
@@ -63,22 +70,19 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
                 history.push({
                   pathname: `/project/service/${projectKey}/read/${row.groupId}/${row.uuid}`
                 })
-              }}>{row.name}</Button>
+              }}>{row.groupName} | {row.name}</Button>
             )
           }
         },
         description: {
-          dataIndex: 'uri',
-        },
-        subTitle: {
           render: (_, row) => {
             return (
-              <Space size={0}>
-                <Tag color={ServiceTypes[row.type]?.color}>{ServiceTypes[row.type]?.text}</Tag>
-                <Tag color={ServiceStatus[row.status]?.color}>{ServiceStatus[row.status]?.text}</Tag>
-              </Space>
-            );
-          },
+              <>
+                <Tag color={RequestTypes[row.requestType]?.color}>{row.requestType}</Tag>
+                {row.preUri}{row.type === 'RPC' ? '#' : ''}{row.uri}
+              </>
+            )
+          }
         },
         content: {
           render: (_, row) => (
@@ -95,7 +99,12 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
                   width: '200px',
                 }}
               >
-                {row.version ? row.version : '未发布'}
+                <Space size={0}>
+                  <Tag
+                    color={ServiceStatus[row.status]?.color}>{convertVersion(row.version)}-{ServiceStatus[row.status]?.text}</Tag>
+
+                </Space>
+
               </div>
             </div>
           ),
@@ -124,11 +133,17 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
           items: menuTabs,
           onChange(value) {
             setActiveKey(value);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           },
         },
         search: {
           onSearch: (value: string) => {
-            alert(value);
+            setKeyword(value);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           },
         },
         actions: [
@@ -136,6 +151,9 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
             options={types}
             onChange={({target: {value}}: RadioChangeEvent) => {
               setType(value);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
             }}
             value={type}
             optionType="button"

@@ -90,7 +90,7 @@ const getProjectDetails = (req: Request, res: Response) => {
       status: 'APPLY',
       owner: '李四',
       accessMode: 'NORMAL',
-      version: '1.0.2',
+      version: 10000,
       detail: '研发中心xxxxxxxxxxxxx',
     },
   });
@@ -124,7 +124,7 @@ const getProjectServiceList = (req: Request, res: Response) => {
         type: 'API',
         status: 'DEV',
         releaseStatus: 'DEV',
-        version: '1.0.2',
+        version: 10000,
       },
       {
         id: 2,
@@ -134,7 +134,7 @@ const getProjectServiceList = (req: Request, res: Response) => {
         type: 'API',
         status: 'RELEASE',
         releaseStatus: 'RELEASE',
-        version: '1.0.2',
+        version: 10000,
       },
       {
         id: 3,
@@ -144,7 +144,7 @@ const getProjectServiceList = (req: Request, res: Response) => {
         type: 'RPC',
         status: 'DEV',
         releaseStatus: 'DEV',
-        version: '1.0.2',
+        version: 10000,
       },
       {
         id: 4,
@@ -154,7 +154,7 @@ const getProjectServiceList = (req: Request, res: Response) => {
         type: 'API',
         status: 'TEST',
         releaseStatus: 'TEST',
-        version: '1.0.2',
+        version: 10000,
       },
       {
         id: 5,
@@ -164,7 +164,7 @@ const getProjectServiceList = (req: Request, res: Response) => {
         type: 'RPC',
         status: 'DEV',
         releaseStatus: 'DEV',
-        version: '1.0.2',
+        version: 10000,
       },
       {
         id: 6,
@@ -174,7 +174,7 @@ const getProjectServiceList = (req: Request, res: Response) => {
         type: 'API',
         status: 'DEV',
         releaseStatus: 'DEV',
-        version: '1.0.2',
+        version: 10000,
       },
     ],
     notEmpty: true,
@@ -200,7 +200,7 @@ const getProjectModelList = (req: Request, res: Response) => {
         className: 'ProjectCmd',
         type: 'CMD',
         status: 'RELEASE',
-        version: '1.0.2',
+        version: 10000,
       },
       {
         id: 2,
@@ -209,7 +209,7 @@ const getProjectModelList = (req: Request, res: Response) => {
         className: 'ProjectDelCmd',
         type: 'CMD',
         status: 'RELEASE',
-        version: '1.0.2',
+        version: 10000,
       },
       {
         id: 3,
@@ -218,7 +218,7 @@ const getProjectModelList = (req: Request, res: Response) => {
         className: 'ProjectQry',
         type: 'QRY',
         status: 'RELEASE',
-        version: '1.0.2',
+        version: 10000,
       },
       {
         id: 4,
@@ -227,7 +227,7 @@ const getProjectModelList = (req: Request, res: Response) => {
         className: 'WarehouseCmd',
         type: 'CMD',
         status: 'RELEASE',
-        version: '1.0.2',
+        version: 10000,
       },
       {
         id: 5,
@@ -236,7 +236,7 @@ const getProjectModelList = (req: Request, res: Response) => {
         className: 'MemberCmd',
         type: 'CMD',
         status: 'RELEASE',
-        version: '1.0.2',
+        version: 10000,
       },
     ],
     notEmpty: true,
@@ -244,168 +244,6 @@ const getProjectModelList = (req: Request, res: Response) => {
     empty: false,
   });
 };
-
-const getProjectWarehouseList = (req: Request, res: Response) => {
-  res.json({
-    success: true,
-    errCode: null,
-    errMessage: null,
-    totalCount: 50,
-    pageSize: 20,
-    pageIndex: 1,
-    data: [
-      {
-        id: 1,
-        name: '研发中心客户端',
-        enname: 'meshed-cloud-rd-client',
-        type: 'CLIENT',
-        status: 'DEV',
-        version: '1.0.2',
-      },
-      {
-        id: 2,
-        name: '研发中心客户端',
-        enname: 'meshed-cloud-rd-client',
-        type: 'CLIENT',
-        status: 'DEV',
-        version: '1.0.1',
-      },
-      {
-        id: 3,
-        name: '研发中心客户端',
-        enname: 'meshed-cloud-rd-client',
-        type: 'CLIENT',
-        status: 'DEV',
-        version: '1.0.0',
-      },
-      {
-        id: 4,
-        name: '研发中心服务',
-        enname: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: '1.0.2',
-      },
-      {
-        id: 5,
-        name: '研发中心服务',
-        enname: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: '1.0.1',
-      },
-      {
-        id: 6,
-        name: '研发中心服务',
-        enname: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: '1.0.0',
-      },
-      {
-        id: 7,
-        name: '研发中心控制台',
-        enname: 'meshed-cloud-rd',
-        type: 'CONSOLE',
-        status: 'DEV',
-        version: '1.0.2',
-      },
-      {
-        id: 8,
-        name: '研发中心控制台',
-        enname: 'meshed-cloud-rd',
-        type: 'CONSOLE',
-        status: 'DEV',
-        version: '1.0.1',
-      },
-    ],
-    notEmpty: true,
-    totalPages: 1,
-    empty: false,
-  });
-};
-
-
-const getProjectVersionList = (req: Request, res: Response) => {
-  res.json({
-    success: true,
-    errCode: null,
-    errMessage: null,
-    totalCount: 50,
-    pageSize: 20,
-    pageIndex: 1,
-    data: [
-      {
-        id: 1,
-        name: '研发中心客户端',
-        enname: 'meshed-cloud-rd-client',
-        type: 'CLIENT',
-        status: 'DEV',
-        version: '1.0.2',
-      },
-      {
-        id: 2,
-        name: '研发中心客户端',
-        enname: 'meshed-cloud-rd-client',
-        type: 'CLIENT',
-        status: 'DEV',
-        version: '1.0.1',
-      },
-      {
-        id: 3,
-        name: '研发中心客户端',
-        enname: 'meshed-cloud-rd-client',
-        type: 'CLIENT',
-        status: 'DEV',
-        version: '1.0.0',
-      },
-      {
-        id: 4,
-        name: '研发中心服务',
-        enname: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: '1.0.2',
-      },
-      {
-        id: 5,
-        name: '研发中心服务',
-        enname: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: '1.0.1',
-      },
-      {
-        id: 6,
-        name: '研发中心服务',
-        enname: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: '1.0.0',
-      },
-      {
-        id: 7,
-        name: '研发中心控制台',
-        enname: 'meshed-cloud-rd',
-        type: 'CONSOLE',
-        status: 'DEV',
-        version: '1.0.2',
-      },
-      {
-        id: 8,
-        name: '研发中心控制台',
-        enname: 'meshed-cloud-rd',
-        type: 'CONSOLE',
-        status: 'DEV',
-        version: '1.0.1',
-      },
-    ],
-    notEmpty: true,
-    totalPages: 1,
-    empty: false,
-  });
-};
-
 
 const getProjectServiceReleaseCount = (req: Request, res: Response) => {
   res.json({
@@ -420,22 +258,6 @@ const getProjectServiceReleaseCount = (req: Request, res: Response) => {
       edit: 2,
       processing: 1,
       reject: 2,
-    },
-  });
-};
-
-const getProjectVersionData = (req: Request, res: Response) => {
-  res.json({
-    success: true,
-    errCode: null,
-    errMessage: null,
-    data: {
-      all: 10,
-      service: 3,
-      page: 1,
-      console: 2,
-      assembly: 3,
-      client: 1
     },
   });
 };
@@ -556,7 +378,7 @@ const getProjectModelDetails = (req: Request, res: Response) => {
     errMessage: null,
     data: {
       "name": "项目模型",
-      "enname": "Axxx",
+      "key": "Axxx",
       "description": "xxxx",
       "fields": [
         {
@@ -594,9 +416,6 @@ export default {
   'GET /api/rd/model/details/*': getProjectModelDetails,
   'GET /api/rd/model/select/*': getProjectModelFieldSelect,
   'POST /api/rd/model/save': saveProjectModel,
-  'GET /api/rd/warehouse/list/*': getProjectWarehouseList,
-  'GET /api/rd/version/list/*': getProjectVersionList,
-  'GET /api/rd/version/count/*': getProjectVersionData,
   'GET /api/rd/project/details/*': getProjectDetails,
   'POST /api/rd/project/save': saveProject,
   'DELETE /api/rd/project/delete/*': deleteProject,

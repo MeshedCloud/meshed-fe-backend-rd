@@ -12,6 +12,7 @@ import {ProjectAccessModeEnum, ProjectStatusEnum, ProjectTypesEnum} from "@/serv
 import {getProjectDetails} from "@/services/project/api";
 import {Link, useMatch} from "@@/exports";
 import ProjectModel from "@/pages/Project/components/Model";
+import {convertVersion} from "@/common/utils";
 
 
 const tabs = [
@@ -99,7 +100,7 @@ const ProjectDetails: React.FC = () => {
                 {data?.owner}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="版本" valueType="text">
-                {data?.version}
+                {convertVersion(data?.version)}
               </ProDescriptions.Item>
               <ProDescriptions.Item
                 label="项目类型"

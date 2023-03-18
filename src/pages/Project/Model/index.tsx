@@ -22,15 +22,22 @@ import {
   getProjectModelSelect,
   saveProjectModel,
 } from "@/services/project/api";
-import {BaseFields, BaseGenerics, ModelTypes} from "@/services/project/serviceModel";
+import {
+  BaseFields,
+  BaseGenerics,
+  BaseSuperClass,
+  ModelTypes,
+  TypeToSuperClassMap
+} from "@/services/project/serviceModel";
 
 const ProjectServiceDetails: React.FC = () => {
 // @ts-ignore
-  const {params: {type, operate, projectKey, uuid}} = useMatch('/project/:projectKey/model/:type/:operate/:uuid')
+  const {params: {type, operate, projectKey, uuid}} = useMatch('/project/model/:projectKey/:type/:operate/:uuid')
   const upperCaseType = type.toUpperCase()
   const upperCaseOperate = operate.toUpperCase()
   const editable: boolean = OperateEditable.includes(upperCaseOperate)
   const [fields, setFields] = useState<string[]>(BaseFields);
+  const [superClassOptions, setSuperClassOptions] = useState<string[]>(BaseSuperClass);
   const [domianName, setDomianName] = useState('');
   const [domainItems, setDomainItems] = useState<string[]>([]);
   const inputDomianRef = useRef<InputRef>(null);
@@ -69,6 +76,7 @@ const ProjectServiceDetails: React.FC = () => {
     getProjectModelSelect(projectKey, {uuid, type, operate: upperCaseOperate}).then(res => {
       if (res.success && res.data) {
         setFields([...BaseFields, ...res.data])
+        setSuperClassOptions([...BaseSuperClass, ...res.data])
       }
     })
   }, [])
@@ -105,7 +113,7 @@ const ProjectServiceDetails: React.FC = () => {
           <ProCard gutter={[16, 16]} split={"horizontal"}>
             <ProCard title="模型信息" bordered>
               <Row>
-                <Col span={8}>
+                <Col span={11}>
                   <ProFormSelect
                     rules={[{required: true,},]}
                     tooltip="无需也不建议添加Service之类的作为后缀"
@@ -138,38 +146,39 @@ const ProjectServiceDetails: React.FC = () => {
                     }}
                   />
                 </Col>
+                <Col span={11} offset={2}>
+                  <ProFormSelect
+                    initialValue={TypeToSuperClassMap[upperCaseType]}
+                    rules={[{required: true,},]}
+                    options={superClassOptions}
+                    name="superClass"
+                    label="父类"
+                  />
+                </Col>
               </Row>
               <Row>
-                <Col span={8}>
-                  <Row>
-                    <Col span={24}>
-                      <ProFormText name="name" label="中文名称" tooltip="模型的中文介绍" rules={[{required: true,},]}/>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={24}>
-                      <ProFormText name="enname" label={<>实体类名&nbsp;<ProFormDependency name={['enname']}>
-                        {({enname}) => {
-                          return (
-                            enname ? <Tag color="#108ee9">{enname + ModelTypes[upperCaseType].name}</Tag> : ''
-                          );
-                        }}
-                      </ProFormDependency></>} disabled={!editable} tooltip="Java实体类名,需要符合Java命名规范,会自动添加后缀"
-                                   rules={[{required: true,},]}/>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={24}/>
-                  </Row>
-                  <Row>
-                    <Col span={24}>
-                      <ProFormTextArea
-                        name="description"
-                        label="模型介绍"
-                        placeholder="请输入介绍"
-                      />
-                    </Col>
-                  </Row>
+                <Col span={11}>
+                  <ProFormText name="name" label="中文名称" tooltip="模型的中文介绍" rules={[{required: true,},]}/>
+                </Col>
+                <Col span={11} offset={2}>
+                  <ProFormText name="key" label={<>实体类名&nbsp;<ProFormDependency name={['key']}>
+                    {({key}) => {
+                      return (
+                        key ? <Tag color="#108ee9">{key + ModelTypes[upperCaseType].name}</Tag> : ''
+                      );
+                    }}
+                  </ProFormDependency></>} disabled={!editable} tooltip="Java实体类名,需要符合Java命名规范,会自动添加后缀"
+                               rules={[{required: true,},]}/>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={24}>
+                  <ProFormTextArea
+                    name="description"
+                    label="模型介绍"
+                    placeholder="请输入介绍"
+                    rules={[{required: true,},]}
+                  />
                 </Col>
               </Row>
             </ProCard>
@@ -187,8 +196,8 @@ const ProjectServiceDetails: React.FC = () => {
                 creatorButtonProps={OperateTypes[upperCaseOperate]?.readonly ? false : {creatorButtonText: "新增字段"}}
               >
                 <ProFormGroup key="group">
-                  <ProFormText name="fieldName" label="字段名称" rules={[{required: true,},]}/>
-                  <ProFormText name="explain" label="字段说明"/>
+                  <ProFormText name="fieldName" label="字段名称" width="xs" rules={[{required: true,},]}/>
+                  <ProFormText name="explain" label="字段说明" width="xs" rules={[{required: true,},]}/>
                   <ProFormSelect
                     initialValue={'String'}
                     rules={[{required: true,},]}
