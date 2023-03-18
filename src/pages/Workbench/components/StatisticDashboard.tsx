@@ -13,7 +13,7 @@ const StatisticDashboard: React.FC<{}> = ({}) => {
     >
       <ProCard
         title="研发数据"
-        extra="2019年9月28日"
+        extra="2023年3月12日"
         split={responsive ? 'horizontal' : 'vertical'}
         bordered
         headerBordered
@@ -51,10 +51,10 @@ const StatisticDashboard: React.FC<{}> = ({}) => {
           </ProCard>
         </ProCard>
         <ProCard title="待办事务">
-          <div style={{height: 260}}>左侧内容</div>
+          <div style={{height: 100}}>无</div>
         </ProCard>
         <ProCard title="公告栏" colSpan="30%">
-          <div style={{height: 260}}>右侧内容</div>
+          <div style={{height: 100}}>无</div>
         </ProCard>
       </ProCard>
     </RcResizeObserver>

@@ -29,11 +29,15 @@ export const OperateTypes = {
 
 }
 
-export const ApprovalTypes = {
+export const ReleaseStatus = {
 
   RELEASE: {
     color: '#2db7f5',
     text: '发行版'
+  },
+  SNAPSHOT: {
+    color: '#677eec',
+    text: '快照版本'
   },
   EDIT: {
     color: '#5BD8A6',
@@ -43,8 +47,5 @@ export const ApprovalTypes = {
     color: '#108ee9',
     text: '待发布'
   },
-  REJECT: {
-    color: '#f50',
-    text: '驳回'
-  },
+
 }

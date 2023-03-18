@@ -24,20 +24,20 @@ const Workbench: React.FC = () => {
           <Index
             leftFilters={[
               <ProFormSelect
-                key='type'
-                name="type"
+                key='visitType'
+                name="visitType"
                 showSearch
                 valueEnum={{
-                  lately: '活跃项目',
-                  member: '参与的项目',
-                  owner: '服务项目',
+                  LATELY: '活跃项目',
+                  MEMBER: '参与的项目',
+                  OWNER: '负责项目',
                 }}
                 placeholder="项目类型"
               />,
 
             ]}
             filtersInitialValues={{
-              type: 'lately',
+              visitType: 'LATELY',
             }}
             request={getProjectList}
           />

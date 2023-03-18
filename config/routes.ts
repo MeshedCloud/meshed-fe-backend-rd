@@ -17,14 +17,14 @@ export default [
   {
     name: '服务',
     icon: 'CodeSandboxOutlined',
-    path: '/project/:projectKey/service/:type/:operate/:uuid',
+    path: '/project/service/:projectKey/:operate/:groupId/:uuid',
     hideInMenu: true,
     component: './Project/Service'
   },
   {
     name: '模型',
     icon: 'CodeSandboxOutlined',
-    path: '/project/:projectKey/model/:type/:operate/:uuid',
+    path: '/project/model/:projectKey/:type/:operate/:uuid',
     hideInMenu: true,
     component: './Project/Model'
   },

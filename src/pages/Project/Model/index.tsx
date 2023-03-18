@@ -11,22 +11,37 @@ import {
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Link, useMatch} from "@@/exports";
-import {Button, Col, Row, Tag} from "antd";
+import {Button, Col, Divider, Input, InputRef, Row, Tag} from "antd";
 import {OperateEditable, OperateTypes} from "@/services/project/constant";
-import {ArrowLeftOutlined, EditOutlined} from "@ant-design/icons";
-import {getProjectModelDetails, getProjectModelFieldSelect, saveProjectModel,} from "@/services/project/api";
-import {BaseFields, BaseGenerics, ModelTypes} from "@/services/project/serviceModel";
-
+import {ArrowLeftOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
+import {
+  getProjectDomainSelect,
+  getProjectModelDetails,
+  getProjectModelSelect,
+  saveProjectModel,
+} from "@/services/project/api";
+import {
+  BaseFields,
+  BaseGenerics,
+  BaseSuperClass,
+  ModelTypes,
+  TypeToSuperClassMap
+} from "@/services/project/serviceModel";
 
 const ProjectServiceDetails: React.FC = () => {
 // @ts-ignore
-  const {params: {type, operate, projectKey, uuid}} = useMatch('/project/:projectKey/model/:type/:operate/:uuid')
+  const {params: {type, operate, projectKey, uuid}} = useMatch('/project/model/:projectKey/:type/:operate/:uuid')
   const upperCaseType = type.toUpperCase()
   const upperCaseOperate = operate.toUpperCase()
   const editable: boolean = OperateEditable.includes(upperCaseOperate)
   const [fields, setFields] = useState<string[]>(BaseFields);
+  const [superClassOptions, setSuperClassOptions] = useState<string[]>(BaseSuperClass);
+  const [domianName, setDomianName] = useState('');
+  const [domainItems, setDomainItems] = useState<string[]>([]);
+  const inputDomianRef = useRef<InputRef>(null);
+
   const saveModel = async (data: any) => {
     if (upperCaseOperate !== 'COPY') {
       data.id = undefined
@@ -39,14 +54,32 @@ const ProjectServiceDetails: React.FC = () => {
     data.projectKey = projectKey
     await saveProjectModel(data)
   }
-  useEffect(() => {
 
-    getProjectModelFieldSelect(uuid, {}).then(res => {
+  const onDomainNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDomianName(event.target.value);
+  };
+
+  const addDomainItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+    e.preventDefault();
+    setDomainItems([...domainItems, domianName]);
+    setDomianName('');
+    setTimeout(() => {
+      inputDomianRef.current?.focus();
+    }, 0);
+  };
+  useEffect(() => {
+    getProjectDomainSelect(projectKey, {uuid, type, operate: upperCaseOperate}).then(res => {
       if (res.success && res.data) {
-        setFields([...BaseFields, ...res.data])
+        setDomainItems(res.data)
       }
     })
-  })
+    getProjectModelSelect(projectKey, {uuid, type, operate: upperCaseOperate}).then(res => {
+      if (res.success && res.data) {
+        setFields([...BaseFields, ...res.data])
+        setSuperClassOptions([...BaseSuperClass, ...res.data])
+      }
+    })
+  }, [])
   return (
     <PageContainer fixedHeader
                    content={<Link to={`/project/details/model/${projectKey}`}><ArrowLeftOutlined/>返回模型列表</Link>}
@@ -80,36 +113,72 @@ const ProjectServiceDetails: React.FC = () => {
           <ProCard gutter={[16, 16]} split={"horizontal"}>
             <ProCard title="模型信息" bordered>
               <Row>
-                <Col span={8}>
-                  <Row>
-                    <Col span={24}>
-                      <ProFormText name="name" label="中文名称" tooltip="模型的中文介绍" rules={[{required: true,},]}/>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={24}>
-                      <ProFormText name="enname" label={<>实体类名&nbsp;<ProFormDependency name={['enname']}>
-                        {({enname}) => {
-                          return (
-                            enname ? <Tag color="#108ee9">{enname + ModelTypes[upperCaseType].name}</Tag> : ''
-                          );
-                        }}
-                      </ProFormDependency></>} disabled={!editable} tooltip="Java实体类名,需要符合Java命名规范,会自动添加后缀"
-                                   rules={[{required: true,},]}/>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={24}/>
-                  </Row>
-                  <Row>
-                    <Col span={24}>
-                      <ProFormTextArea
-                        name="describe"
-                        label="模型介绍"
-                        placeholder="请输入介绍"
-                      />
-                    </Col>
-                  </Row>
+                <Col span={11}>
+                  <ProFormSelect
+                    rules={[{required: true,},]}
+                    tooltip="无需也不建议添加Service之类的作为后缀"
+                    options={domainItems}
+                    name="domain"
+                    label="归属领域"
+                    disabled={!editable}
+                    fieldProps={{
+                      dropdownRender: (menu) => (
+                        <>
+                          {menu}
+                          <Divider style={
+                            {margin: '8px 0'}
+                          }/>
+                          <div style={
+                            {padding: '0 8px 4px', display: 'flex',}
+                          }>
+                            <Input
+                              placeholder="新建领域"
+                              ref={inputDomianRef}
+                              value={domianName}
+                              onChange={onDomainNameChange}
+                            />
+                            <Button type="text" icon={<PlusOutlined/>} onClick={addDomainItem}>
+                              新增领域
+                            </Button>
+                          </div>
+                        </>
+                      )
+                    }}
+                  />
+                </Col>
+                <Col span={11} offset={2}>
+                  <ProFormSelect
+                    initialValue={TypeToSuperClassMap[upperCaseType]}
+                    rules={[{required: true,},]}
+                    options={superClassOptions}
+                    name="superClass"
+                    label="父类"
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col span={11}>
+                  <ProFormText name="name" label="中文名称" tooltip="模型的中文介绍" rules={[{required: true,},]}/>
+                </Col>
+                <Col span={11} offset={2}>
+                  <ProFormText name="key" label={<>实体类名&nbsp;<ProFormDependency name={['key']}>
+                    {({key}) => {
+                      return (
+                        key ? <Tag color="#108ee9">{key + ModelTypes[upperCaseType].name}</Tag> : ''
+                      );
+                    }}
+                  </ProFormDependency></>} disabled={!editable} tooltip="Java实体类名,需要符合Java命名规范,会自动添加后缀"
+                               rules={[{required: true,},]}/>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={24}>
+                  <ProFormTextArea
+                    name="description"
+                    label="模型介绍"
+                    placeholder="请输入介绍"
+                    rules={[{required: true,},]}
+                  />
                 </Col>
               </Row>
             </ProCard>
@@ -127,8 +196,8 @@ const ProjectServiceDetails: React.FC = () => {
                 creatorButtonProps={OperateTypes[upperCaseOperate]?.readonly ? false : {creatorButtonText: "新增字段"}}
               >
                 <ProFormGroup key="group">
-                  <ProFormText name="fieldName" label="字段名称" rules={[{required: true,},]}/>
-                  <ProFormText name="explain" label="字段说明"/>
+                  <ProFormText name="fieldName" label="字段名称" width="xs" rules={[{required: true,},]}/>
+                  <ProFormText name="explain" label="字段说明" width="xs" rules={[{required: true,},]}/>
                   <ProFormSelect
                     initialValue={'String'}
                     rules={[{required: true,},]}
