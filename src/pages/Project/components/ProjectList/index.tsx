@@ -85,7 +85,6 @@ const ProjectList: React.FC<{
             collapseLabel={<FilterOutlined/>}
             onFinish={async (values) => {
               setFilterParams(values)
-              setFilterParams(values)
               getList(values);
             }}
           >

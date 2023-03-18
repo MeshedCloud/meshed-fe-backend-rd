@@ -1,56 +1,63 @@
-import {ProList} from '@ant-design/pro-components';
+import {ActionType, ProList} from '@ant-design/pro-components';
 import {Button, Space, Tag} from 'antd';
-import React, {useEffect, useState} from 'react';
-import {ApprovalTypes} from "@/services/project/constant";
-import {getProjectModelCount, getProjectModelList,} from '@/services/project/api';
+import React, {useEffect, useRef, useState} from 'react';
+import {ReleaseStatus} from "@/services/project/constant";
+import {getProjectModelList, getProjectModelReleaseCount,} from '@/services/project/api';
 import {renderBadge} from "@/common/common";
 import CheckCardModal from "@/components/CheckCardModal";
 import {PlusOutlined} from "@ant-design/icons";
 import {history} from 'umi';
 import {ModelTypes} from "@/services/project/serviceModel";
+import {convertVersion} from "@/common/utils";
 
 
 const ProjectModelPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('RELEASE');
+  const [keyword, setKeyword] = useState<React.Key | undefined>();
   const [menuTabs, setMenuTabs] = useState<{ key: string; label: JSX.Element; }[]>();
+  const actionRef = useRef<ActionType>();
   useEffect(() => {
-    getProjectModelCount(projectKey, {}).then(res => {
+    getProjectModelReleaseCount(projectKey, {}).then(res => {
       if (res && res.success) {
         const countData = res.data;
         const approvalTypes: { key: string; label: JSX.Element; }[] = []
-        Object.keys(ApprovalTypes).map(item => {
+        Object.keys(ReleaseStatus).map(item => {
           approvalTypes.push(
             {
               key: item,
               label:
-                <span>{ApprovalTypes[item].text}{renderBadge(countData ? countData[item.toLowerCase()] : 0, activeKey === item)}</span>,
+                <span>{ReleaseStatus[item].text}{renderBadge(countData ? countData[item.toLowerCase()] : 0, activeKey === item)}</span>,
             },
           )
         })
         setMenuTabs(approvalTypes)
       }
     })
-  });
+  }, []);
   return (
     <ProList<any>
       rowKey="name"
-      request={(params => getProjectModelList(projectKey, params))}
+      actionRef={actionRef}
+      request={(params => getProjectModelList(projectKey, {
+        ...params,
+        releaseStatus: activeKey,
+        keyword
+      }))}
       metas={{
         title: {
           dataIndex: 'className',
         },
         description: {
           dataIndex: 'name',
-        },
-        subTitle: {
           render: (_, row) => {
             return (
               <Space size={0}>
-                <Tag color={ModelTypes[row.type]?.color}>{ModelTypes[row.type]?.text}</Tag>
+                <Tag color={ModelTypes[row.type]?.color}>{ModelTypes[row.type]?.text}</Tag> {_}
               </Space>
             );
-          },
+          }
         },
+        subTitle: {},
         content: {
           render: (_, row) => (
             <div
@@ -66,7 +73,7 @@ const ProjectModelPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
                   width: '200px',
                 }}
               >
-                {row.version ? row.version : '未发布'}
+                {convertVersion(row.version)}
               </div>
             </div>
           ),
@@ -75,12 +82,12 @@ const ProjectModelPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
           render: (text, row) => [
             <Button size="small" type="link" onClick={() => {
               history.push({
-                pathname: `/project/${projectKey}/model/${row.type}/edit/${row.uuid}`
+                pathname: `/project/model/${projectKey}/${row.type}/edit/${row.uuid}`
               })
             }}>副本编辑</Button>,
             <Button size="small" type="link" onClick={() => {
               history.push({
-                pathname: `/project/${projectKey}/model/${row.type}/copy/${row.uuid}`
+                pathname: `/project/model/${projectKey}/${row.type}/copy/${row.uuid}`
               })
             }}>复制</Button>,
             <Button size="small" type="link" onClick={() => {
@@ -95,18 +102,24 @@ const ProjectModelPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
           items: menuTabs,
           onChange(value) {
             setActiveKey(value);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           },
         },
         search: {
           onSearch: (value: string) => {
-            alert(value);
+            setKeyword(value);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           },
         },
         actions: [
           <CheckCardModal title="新建模型" data={ModelTypes} defaultValue="CMD" action={<><PlusOutlined/>新建接口</>}
                           onFinish={(value => {
                             history.push({
-                              pathname: `/project/${projectKey}/model/${value}/new/init`
+                              pathname: `/project/model/${projectKey}/${value}/new/init`
                             })
                           })}/>,
         ],
