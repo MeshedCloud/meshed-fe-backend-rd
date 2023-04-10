@@ -1,31 +1,31 @@
-import { outLogin } from '@/services/ant-design-pro/api';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { history, useModel } from '@umijs/max';
-import { Avatar, Menu, Spin } from 'antd';
-import type { ItemType } from 'antd/es/menu/hooks/useItems';
-import { stringify } from 'querystring';
-import type { MenuInfo } from 'rc-menu/lib/interface';
-import React, { useCallback } from 'react';
-import { flushSync } from 'react-dom';
+import {LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
+import {history, useModel} from '@umijs/max';
+import {Avatar, Menu, Spin} from 'antd';
+import type {ItemType} from 'antd/es/menu/hooks/useItems';
+import {stringify} from 'querystring';
+import type {MenuInfo} from 'rc-menu/lib/interface';
+import React, {useCallback} from 'react';
+import {flushSync} from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
+import {logout} from '@/services/user/api';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
 };
 
-const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
+const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
   /**
    * 退出登录，并且将当前的 url 保存
    */
   const loginOut = async () => {
-    await outLogin();
-    const { search, pathname } = window.location;
+    const res = await logout();
+    const {search, pathname} = window.location;
     const urlParams = new URL(window.location.href).searchParams;
     /** 此方法会跳转到 redirect 参数所在的位置 */
     const redirect = urlParams.get('redirect');
     // Note: There may be security issues, please note
-    if (window.location.pathname !== '/user/login' && !redirect) {
+    if (window.location.pathname !== '/iam/user/login' && !redirect) {
       history.replace({
         pathname: '/user/login',
         search: stringify({
@@ -33,17 +33,20 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         }),
       });
     }
+    return res.success
   };
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const onMenuClick = useCallback(
-    (event: MenuInfo) => {
-      const { key } = event;
+    async (event: MenuInfo) => {
+      const {key} = event;
       if (key === 'logout') {
-        flushSync(() => {
-          setInitialState((s) => ({ ...s, currentUser: undefined }));
-        });
-        loginOut();
+        const op = await loginOut();
+        if (op) {
+          flushSync(() => {
+            setInitialState((s) => ({...s, currentUser: undefined}));
+          });
+        }
         return;
       }
       history.push(`/account/${key}`);
@@ -76,20 +79,20 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   const menuItems: ItemType[] = [
     ...(menu
       ? [
-          {
-            key: 'center',
-            icon: <UserOutlined />,
-            label: '个人中心',
-          },
-          {
-            key: 'settings',
-            icon: <SettingOutlined />,
-            label: '个人设置',
-          },
-          {
-            type: 'divider' as const,
-          },
-        ]
+        {
+          key: 'center',
+          icon: <UserOutlined/>,
+          label: '个人中心',
+        },
+        {
+          key: 'settings',
+          icon: <SettingOutlined/>,
+          label: '个人设置',
+        },
+        {
+          type: 'divider' as const,
+        },
+      ]
       : []),
     {
       key: 'logout',
@@ -105,7 +108,9 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   return (
     <HeaderDropdown overlay={menuHeaderDropdown}>
       <span className={`${styles.action} ${styles.account}`}>
-        <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
+        <Avatar size="small" className={styles.avatar} alt="avatar">
+          {currentUser.name.length > 0 ? currentUser.name[0] : "未知"}
+        </Avatar>
         <span className={`${styles.name} anticon`}>{currentUser.name}</span>
       </span>
     </HeaderDropdown>

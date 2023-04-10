@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
         {
           key: 'github',
           title: <GithubOutlined/>,
-          href: 'https://github.com/Vincent-Vic',
+          href: 'https://github.com/meshed-cloud',
           blankTarget: true,
         },
         {
