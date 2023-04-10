@@ -21,6 +21,12 @@ declare namespace API {
     };
     address?: string;
     phone?: string;
+    id?: number;
+    realName?: number;
+    loginId?: number;
+    status?: string;
+    validEmail?: boolean;
+    validPhone?: boolean;
   };
 
   type LoginResult = {

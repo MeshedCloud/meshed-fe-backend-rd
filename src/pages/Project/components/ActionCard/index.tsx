@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './index.less';
-import {Link} from "@@/exports";
+import {Link} from "@umijs/max";
 
 /**
  * 每个单独的卡片，为了复用样式抽成了组件

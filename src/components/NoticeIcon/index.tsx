@@ -1,9 +1,9 @@
-import { getNotices } from '@/services/ant-design-pro/api';
-import { useModel, useRequest } from '@umijs/max';
-import { message, Tag } from 'antd';
-import { groupBy } from 'lodash';
+import {getNotices} from '@/services/user/api';
+import {useModel, useRequest} from '@umijs/max';
+import {message, Tag} from 'antd';
+import {groupBy} from 'lodash';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import styles from './index.less';
 import NoticeIcon from './NoticeIcon';
 

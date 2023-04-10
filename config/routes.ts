@@ -28,8 +28,9 @@ export default [
     hideInMenu: true,
     component: './Project/Model'
   },
-  {name: '成员管理', icon: 'TeamOutlined', path: '/list', component: './TableList'},
-  {name: '研发配置', icon: 'SettingOutlined', path: '/list', component: './TableList'},
+  {name: '成员管理', icon: 'TeamOutlined', path: '/list', component: './Project'},
+  {name: '研发配置', icon: 'SettingOutlined', path: '/list', component: './Project'},
   {path: '/', redirect: '/workbench'},
-  {path: '*', layout: false, component: './404'},
+  {path: '/error/:code', layout: false, component: './error'},
+  {path: '*', redirect: '/error/404'},
 ];
