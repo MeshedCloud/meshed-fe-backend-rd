@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {FilterOutlined} from "@ant-design/icons";
-import {LightFilter} from "_@ant-design_pro-components@2.3.30@@ant-design/pro-components";
+import {LightFilter} from "@ant-design/pro-components";
 import ProjectItem from "@/pages/Project/components/ProjectItem";
-import {Pagination} from "_antd@4.24.2@antd";
-import {Input} from 'antd';
+import {Input, Pagination} from "antd";
 import type {SortOrder} from 'antd/es/table/interface';
-import type {Store} from "_rc-field-form@1.27.3@rc-field-form/lib/interface";
+import type {Store} from "rc-field-form/lib/interface";
 import type {Project} from "@/services/project/project";
 import {Link} from "@@/exports";
 
@@ -117,7 +116,7 @@ const ProjectList: React.FC<{
       >
         {
           list.map((item) => {
-            return (<Link to={`/project/details/summary/${item.key}`}><ProjectItem data={item}/></Link>)
+            return (<Link to={`/project/details/${item.key}`}><ProjectItem data={item}/></Link>)
           })
         }
 

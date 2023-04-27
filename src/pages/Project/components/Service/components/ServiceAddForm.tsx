@@ -13,7 +13,12 @@ import {Button, Divider, Form, Input, InputRef} from 'antd';
 
 import {ProjectServiceGroup, ServiceTypes} from "@/services/project/serviceModel";
 import React, {useEffect, useRef, useState} from 'react';
-import {getProjectDomainSelect, getProjectServiceGroupSelect, saveProjectServiceGroup} from "@/services/project/api";
+import {
+  getProjectDomainSelect,
+  getProjectServiceGroupSelect,
+  saveProjectDomain,
+  saveProjectServiceGroup
+} from "@/services/project/api";
 import {history} from "@@/core/history";
 
 const newItem = {
@@ -47,11 +52,12 @@ export default (props: Props) => {
 
   };
 
-  const addDomainItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+  const addDomainItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     e.preventDefault();
     if (domianName != '') {
       setDomainItems([...domainItems, domianName]);
       setDomianName('');
+      await saveProjectDomain({projectKey: props.projectKey, key: domianName}, {skipErrorHandler: true,});
       setTimeout(() => {
         inputDomianRef.current?.focus();
       }, 0);

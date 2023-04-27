@@ -18,7 +18,7 @@ export default {
   test: {
     // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
     '/api/iam/': {
-      target: 'http://localhost:7989',
+      target: 'https://oauth2.meshed.cn',
       changeOrigin: true,
       pathRewrite: {'^/api': ''},
     },

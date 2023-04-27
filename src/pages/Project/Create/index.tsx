@@ -8,12 +8,10 @@ import {
   ProFormCheckbox,
   ProFormGroup,
   ProFormRadio,
-  ProFormSwitch,
   ProFormText,
   ProFormTextArea,
   StepsForm
 } from '@ant-design/pro-components';
-import {message} from 'antd';
 import React, {useRef, useState} from 'react';
 import type {ProjectCmd} from "@/services/project/project";
 import {
@@ -23,14 +21,8 @@ import {
   ProjectTypesEnum,
   ServiceTemplateEnum
 } from "@/services/project/project";
-
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
+import {saveProject} from "@/services/project/api";
+import {history} from "@umijs/max";
 
 
 const CreateProject: React.FC = () => {
@@ -44,10 +36,20 @@ const CreateProject: React.FC = () => {
       <ProCard style={{padding: 100}}>
         <StepsForm<ProjectCmd>
           formRef={formRef}
-          onFinish={async (values) => {
-            await waitTime(1000);
-            console.log("values ", values);
-            message.success('提交成功');
+          onFinish={async (data) => {
+            data.codeTemplates = []
+            if (data.pageTemplate) {
+              data.codeTemplates.push(data.pageTemplate)
+            }
+            if (data.serviceTemplate) {
+              data.codeTemplates.push(data.serviceTemplate)
+            }
+            const res = await saveProject(data);
+            if (res.success) {
+              history.push("/project/create/success")
+            } else {
+              history.push(`/project/create/error?message=${res.errMessage}`)
+            }
           }}
           formProps={{
             validateMessages: {
@@ -103,6 +105,7 @@ const CreateProject: React.FC = () => {
                         Object.keys(PageTemplateEnum).map(key => {
                           return <CheckCard
                             key={key}
+                            disabled={PageTemplateEnum[key].disabled}
                             avatar={PageTemplateEnum[key].avatar}
                             title={PageTemplateEnum[key].text}
                             description={PageTemplateEnum[key].description}
@@ -157,19 +160,19 @@ const CreateProject: React.FC = () => {
               label="项目级别"
               radioType="button"
               tooltip="正常作为非成员可见仅限查看API接口，对代码进行加密，内部开源对代码不进行成员限制，核心等级对非成员不可见"
-              initialValue={'NORMAL'}
+              initialValue={'NONE'}
               fieldProps={{buttonStyle: "solid"}}
               options={ProjectAccessModeOptions}
             />
             <ProFormText name="name" label="名称" placeholder="请输入名称" rules={[{required: true,},]}/>
             <ProFormText name="key" label="代号" tooltip="代号指代项目英文简写" placeholder="请输入代号"
                          rules={[{required: true,},]}/>
-
-            <ProForm.Group title="数据源">
-              <ProFormSwitch name="needMysql" label="MySql数据库" initialValue={true}/>
-              <ProFormSwitch name="needRedis" label="Redis" initialValue={true}/>
-
-            </ProForm.Group>
+            <ProFormCheckbox.Group
+              name="infrastructures"
+              layout="vertical"
+              label="服务设施"
+              options={['MySql', 'Redis']}
+            />
             <ProFormTextArea
               name="description"
               label="立项缘由"
@@ -204,16 +207,16 @@ const CreateProject: React.FC = () => {
                 {result.pageTemplate}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="前端项目名称" valueType="text">
-                meshed-fe-backend-{result.enname}
+                meshed-fe-backend-{result.key}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="后端模板" valueEnum={ServiceTemplateEnum}>
                 {result.serviceTemplate}
               </ProDescriptions.Item>
               <ProDescriptions.Item label="后端项目名称" valueType="text">
-                meshed-cloud-{result.name} & meshed-cloud-{result.name}-client
+                meshed-cloud-{result.key} & meshed-cloud-{result.key}-client
               </ProDescriptions.Item>
               <ProDescriptions.Item label="立项缘由" span={2} valueType="text">
-                {result.describe}
+                {result.description}
               </ProDescriptions.Item>
             </ProDescriptions>
             <ProFormCheckbox.Group

@@ -1,19 +1,20 @@
 import {Request, Response} from 'express';
+import {SUCCESS_RESPONSE} from "./commonMock";
 
 const getProjectWarehouseList = (req: Request, res: Response) => {
   res.json({
     success: true,
     errCode: null,
     errMessage: null,
-    totalCount: 50,
-    pageSize: 20,
+    totalCount: 3,
+    pageSize: 10,
     pageIndex: 1,
     data: [
       {
         id: 1,
-        name: '研发平台客户端',
-        repoName: 'meshed-cloud-rd-client',
-        type: 'CLIENT',
+        name: '研发平台服务端',
+        repoName: 'meshed-cloud-rd',
+        type: 'SERVICE',
         status: 'DEV',
         version: 10000,
       },
@@ -27,48 +28,8 @@ const getProjectWarehouseList = (req: Request, res: Response) => {
       },
       {
         id: 3,
-        name: '研发平台客户端',
-        repoName: 'meshed-cloud-rd-client',
-        type: 'CLIENT',
-        status: 'DEV',
-        version: 10000,
-      },
-      {
-        id: 4,
-        name: '研发平台服务',
-        repoName: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: 10002,
-      },
-      {
-        id: 5,
-        name: '研发平台服务',
-        repoName: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: 10001,
-      },
-      {
-        id: 6,
-        name: '研发平台服务',
-        repoName: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: 10000,
-      },
-      {
-        id: 7,
         name: '研发平台控制台',
-        repoName: 'meshed-cloud-rd',
-        type: 'CONSOLE',
-        status: 'DEV',
-        version: 10000,
-      },
-      {
-        id: 8,
-        name: '研发平台控制台',
-        repoName: 'meshed-cloud-rd',
+        repoName: 'meshed-fe-backend-rd',
         type: 'CONSOLE',
         status: 'DEV',
         version: 10000,
@@ -86,15 +47,15 @@ const getProjectVersionList = (req: Request, res: Response) => {
     success: true,
     errCode: null,
     errMessage: null,
-    totalCount: 50,
-    pageSize: 20,
+    totalCount: 3,
+    pageSize: 10,
     pageIndex: 1,
     data: [
       {
         id: 1,
-        name: '研发平台客户端',
-        versionName: 'meshed-cloud-rd-client',
-        type: 'CLIENT',
+        name: '研发平台服务端',
+        versionName: 'meshed-cloud-rd',
+        type: 'SERVICE',
         status: 'DEV',
         version: 10000,
       },
@@ -102,65 +63,24 @@ const getProjectVersionList = (req: Request, res: Response) => {
         id: 2,
         name: '研发平台客户端',
         versionName: 'meshed-cloud-rd-client',
-        type: 'CLIENT',
+        type: 'CONSOLE',
         status: 'DEV',
         version: 10000,
       },
       {
         id: 3,
         name: '研发平台客户端',
-        versionName: 'meshed-cloud-rd-client',
-        type: 'CLIENT',
-        status: 'DEV',
-        version: 10000,
-      },
-      {
-        id: 4,
-        name: '研发平台服务',
-        versionName: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: 10000,
-      },
-      {
-        id: 5,
-        name: '研发平台服务',
-        versionName: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: 10000,
-      },
-      {
-        id: 6,
-        name: '研发平台服务',
-        versionName: 'meshed-cloud-rd',
-        type: 'SERVICE',
-        status: 'DEV',
-        version: 10000,
-      },
-      {
-        id: 7,
-        name: '研发平台控制台',
-        versionName: 'meshed-cloud-rd',
+        versionName: 'meshed-fe-backend-rd',
         type: 'CONSOLE',
         status: 'DEV',
         version: 10000,
-      },
-      {
-        id: 8,
-        name: '研发平台控制台',
-        versionName: 'meshed-cloud-rd',
-        type: 'CONSOLE',
-        status: 'DEV',
-        version: 10000,
-      },
+      }
     ],
     notEmpty: true,
     totalPages: 1,
     empty: false,
   });
 };
-
 
 const getProjectVersionData = (req: Request, res: Response) => {
   res.json({
@@ -178,9 +98,38 @@ const getProjectVersionData = (req: Request, res: Response) => {
   });
 };
 
+const getProjectPackagesList = (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    errCode: null,
+    errMessage: null,
+    totalCount: 3,
+    pageSize: 10,
+    pageIndex: 1,
+    data: [
+      {
+        id: 1,
+        name: '研发平台客户端',
+        groupId: 'cn.meshed.cloud.rd',
+        artifactId: 'meshed-cloud-rd',
+        type: 'MAVEN',
+        version: "1.0.0",
+      },
+    ],
+    notEmpty: true,
+    totalPages: 1,
+    empty: false,
+  });
+};
+
+const savePackages = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
 
 export default {
   'GET /api/rd/warehouse/list/*': getProjectWarehouseList,
   'GET /api/rd/version/list/*': getProjectVersionList,
   'GET /api/rd/version/count/*': getProjectVersionData,
+  'GET /api/rd/packages/list': getProjectPackagesList,
+  'PUT /api/rd/packages/save': savePackages,
 };

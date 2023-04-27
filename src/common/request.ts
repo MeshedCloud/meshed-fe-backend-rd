@@ -104,14 +104,15 @@ export class Request {
     });
   }
 
-  static async put<T>(uri: string, options?: Record<string, any>) {
+  static async put<T>(uri: string, data?: {}, options?: Record<string, any>) {
     return await request<Response<T>>(uri, {
       method: Method.PUT,
+      data,
       ...(options || {}),
     });
   }
 
-  static async delete<T>(uri: string, options?: Record<string, any>) {
+  static async delete<T>(uri: string, data?: {}, options?: Record<string, any>) {
     return await request<Response<T>>(uri, {
       method: Method.DELETE,
       ...(options || {}),

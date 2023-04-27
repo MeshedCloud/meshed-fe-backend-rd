@@ -1,10 +1,10 @@
 export default {
 
   prod: {
-    target: 'http://localhost:7989/iam/login/token/rd',
+    target: 'https://oauth2.meshed.cn/iam/login/token/rd',
   },
   dev: {
-    target: 'http://localhost:7989/iam/login/token/rd',
+    target: 'https://oauth2.meshed.cn/iam/login/token/rd',
   },
   test: {
     target: 'http://localhost:7989/iam/login/token/rd',
