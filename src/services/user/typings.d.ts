@@ -41,6 +41,7 @@ declare namespace API {
     locked: boolean | undefined;
   }
 
+
   type LoginResult = {
     status?: string;
     type?: string;
