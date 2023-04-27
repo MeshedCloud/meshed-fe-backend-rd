@@ -112,16 +112,17 @@ const getProjectServiceList = (req: Request, res: Response) => {
     success: true,
     errCode: null,
     errMessage: null,
-    totalCount: 50,
-    pageSize: 20,
+    totalCount: 2,
+    pageSize: 10,
     pageIndex: 1,
     data: [
       {
         id: 1,
         uuid: 1,
         name: '研发项目列表',
-        api: '/rd/project/list',
+        uri: '/rd/project/list',
         type: 'API',
+        requestType: 'GET',
         status: 'DEV',
         releaseStatus: 'DEV',
         version: 10000,
@@ -129,49 +130,10 @@ const getProjectServiceList = (req: Request, res: Response) => {
       {
         id: 2,
         uuid: 2,
-        name: '研发项目详情',
-        api: '/rd/project/desc',
-        type: 'API',
-        status: 'RELEASE',
-        releaseStatus: 'RELEASE',
-        version: 10000,
-      },
-      {
-        id: 3,
-        uuid: 3,
         name: '研发项目列表',
-        api: '/rd/project/list',
+        uri: 'ProjectRpc#list',
         type: 'RPC',
-        status: 'DEV',
-        releaseStatus: 'DEV',
-        version: 10000,
-      },
-      {
-        id: 4,
-        uuid: 4,
-        name: '研发项目详情',
-        api: '/rd/project/desc',
-        type: 'API',
-        status: 'TEST',
-        releaseStatus: 'TEST',
-        version: 10000,
-      },
-      {
-        id: 5,
-        uuid: 5,
-        name: '研发项目列表',
-        api: 'ProjectService#getList',
-        type: 'RPC',
-        status: 'DEV',
-        releaseStatus: 'DEV',
-        version: 10000,
-      },
-      {
-        id: 6,
-        uuid: 6,
-        name: '研发项目详情',
-        api: '/rd/project/desc',
-        type: 'API',
+        requestType: 'RPC',
         status: 'DEV',
         releaseStatus: 'DEV',
         version: 10000,
@@ -189,8 +151,8 @@ const getProjectModelList = (req: Request, res: Response) => {
     success: true,
     errCode: null,
     errMessage: null,
-    totalCount: 50,
-    pageSize: 20,
+    totalCount: 2,
+    pageSize: 10,
     pageIndex: 1,
     data: [
       {
@@ -198,7 +160,7 @@ const getProjectModelList = (req: Request, res: Response) => {
         uuid: 1,
         name: '项目修改',
         className: 'ProjectCmd',
-        type: 'CMD',
+        type: 'COMMAND',
         status: 'RELEASE',
         version: 10000,
       },
@@ -207,34 +169,7 @@ const getProjectModelList = (req: Request, res: Response) => {
         uuid: 2,
         name: '项目删除',
         className: 'ProjectDelCmd',
-        type: 'CMD',
-        status: 'RELEASE',
-        version: 10000,
-      },
-      {
-        id: 3,
-        uuid: 3,
-        name: '项目查询',
-        className: 'ProjectQry',
-        type: 'QRY',
-        status: 'RELEASE',
-        version: 10000,
-      },
-      {
-        id: 4,
-        uuid: 4,
-        name: '仓库修改',
-        className: 'WarehouseCmd',
-        type: 'CMD',
-        status: 'RELEASE',
-        version: 10000,
-      },
-      {
-        id: 5,
-        uuid: 5,
-        name: '成员修改',
-        className: 'MemberCmd',
-        type: 'CMD',
+        type: 'COMMAND',
         status: 'RELEASE',
         version: 10000,
       },
@@ -399,10 +334,340 @@ const saveProjectService = (req: Request, res: Response) => {
   res.json(SUCCESS_RESPONSE);
 };
 
+const completeProjectService = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+
+const revokeProjectService = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const discardProjectService = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const deleteProjectService = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+
 const saveProjectModel = (req: Request, res: Response) => {
   res.json(SUCCESS_RESPONSE);
 };
 
+const completeProjectModel = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+
+const revokeProjectModel = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const discardProjectModel = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const deleteProjectModel = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const getMemberList = (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    errCode: null,
+    errMessage: null,
+    totalCount: 2,
+    pageSize: 10,
+    pageIndex: 1,
+    data: [
+      {
+        id: 1,
+        name: '李四',
+        phone: '18888888888',
+        email: '11@qq.com',
+
+      },
+      {
+        id: 2,
+        name: '王五',
+        phone: '18888888888',
+        email: '11@qq.com',
+      },
+      {
+        id: 3,
+        name: '张帅',
+        phone: '18888888888',
+        email: '11@qq.com',
+      },
+    ],
+    notEmpty: true,
+    totalPages: 1,
+    empty: false,
+  });
+};
+
+const getImportMemberList = (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    errCode: null,
+    errMessage: null,
+    totalCount: 22,
+    pageSize: 10,
+    pageIndex: 1,
+    data: [
+      {
+        id: 1,
+        disabled: true,
+        name: 'admin',
+        loginId: 'admin',
+        phone: '18888888888',
+        email: '11@qq.com',
+        validPhone: false,
+        validEmail: false,
+        expired: false,
+        locked: false,
+        status: 'VALID',
+        createBy: 'sys',
+        createTime: '2022-10-05T14:59:24',
+        updateBy: 'sys',
+        updateTime: '2022-10-05T14:59:24',
+      },
+      {
+        id: 2,
+        realName: 'admin',
+        loginId: 'user',
+        phone: '18888888881',
+        email: '12@qq.com',
+        validPhone: false,
+        validEmail: false,
+        expired: false,
+        locked: false,
+        status: 'VALID',
+        createBy: 'sys',
+        createTime: '2022-10-05T14:59:24',
+        updateBy: 'sys',
+        updateTime: '2022-10-05T14:59:24',
+      },
+      {
+        id: 3,
+        realName: 'admin',
+        loginId: 'admin',
+        phone: '18888888888',
+        email: '11@qq.com',
+        validPhone: false,
+        validEmail: false,
+        expired: false,
+        locked: false,
+        status: 'VALID',
+        createBy: 'sys',
+        createTime: '2022-10-05T14:59:24',
+        updateBy: 'sys',
+        updateTime: '2022-10-05T14:59:24',
+      },
+      {
+        id: 4,
+        realName: 'admin',
+        loginId: 'admin',
+        phone: '18888888888',
+        email: '11@qq.com',
+        validPhone: false,
+        validEmail: false,
+        expired: false,
+        locked: false,
+        status: 'VALID',
+        createBy: 'sys',
+        createTime: '2022-10-05T14:59:24',
+        updateBy: 'sys',
+        updateTime: '2022-10-05T14:59:24',
+      },
+      {
+        id: 5,
+        realName: 'admin',
+        loginId: 'admin',
+        phone: '18888888888',
+        email: '11@qq.com',
+        validPhone: false,
+        validEmail: false,
+        expired: false,
+        locked: true,
+        status: 'VALID',
+        createBy: 'sys',
+        createTime: '2022-10-05T14:59:24',
+        updateBy: 'sys',
+        updateTime: '2022-10-05T14:59:24',
+      },
+      {
+        id: 6,
+        realName: 'admin',
+        loginId: 'admin',
+        phone: '18888888888',
+        email: '11@qq.com',
+        validPhone: false,
+        validEmail: false,
+        expired: false,
+        locked: false,
+        status: 'VALID',
+        createBy: 'sys',
+        createTime: '2022-10-05T14:59:24',
+        updateBy: 'sys',
+        updateTime: '2022-10-05T14:59:24',
+      },
+      {
+        id: 7,
+        realName: 'admin',
+        loginId: 'admin',
+        phone: '18888888888',
+        email: '11@qq.com',
+        validPhone: false,
+        validEmail: false,
+        expired: false,
+        locked: false,
+        status: 'VALID',
+        createBy: 'sys',
+        createTime: '2022-10-05T14:59:24',
+        updateBy: 'sys',
+        updateTime: '2022-10-05T14:59:24',
+      },
+      {
+        id: 8,
+        realName: 'admin',
+        loginId: 'admin',
+        phone: '18888888888',
+        email: '11@qq.com',
+        validPhone: false,
+        validEmail: false,
+        expired: false,
+        locked: false,
+        status: 'VALID',
+        createBy: 'sys',
+        createTime: '2022-10-05T14:59:24',
+        updateBy: 'sys',
+        updateTime: '2022-10-05T14:59:24',
+      },
+      {
+        id: 9,
+        realName: 'admin',
+        loginId: 'admin',
+        phone: '18888888888',
+        email: '11@qq.com',
+        validPhone: false,
+        validEmail: false,
+        expired: false,
+        locked: false,
+        status: 'VALID',
+        createBy: 'sys',
+        createTime: '2022-10-05T14:59:24',
+        updateBy: 'sys',
+        updateTime: '2022-10-05T14:59:24',
+      },
+      {
+        id: 10,
+        realName: 'admin',
+        loginId: 'admin',
+        phone: '18888888888',
+        email: '11@qq.com',
+        validPhone: false,
+        validEmail: false,
+        expired: false,
+        locked: false,
+        status: 'VALID',
+        createBy: 'sys',
+        createTime: '2022-10-05T14:59:24',
+        updateBy: 'sys',
+        updateTime: '2022-10-05T14:59:24',
+      },
+    ],
+    notEmpty: true,
+    totalPages: 2,
+    empty: false,
+  });
+};
+
+const saveMember = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const deleteMember = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const getProjectMemberList = (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    errCode: null,
+    errMessage: null,
+    totalCount: 2,
+    pageSize: 10,
+    pageIndex: 1,
+    data: [
+      {
+        id: 1,
+        name: '李四',
+        projectRole: 'ADMIN',
+      },
+      {
+        id: 2,
+        name: '王五',
+        projectRole: 'VISITOR',
+      },
+      {
+        id: 3,
+        name: '张帅',
+        projectRole: 'DEVELOPER',
+      },
+    ],
+    notEmpty: true,
+    totalPages: 1,
+    empty: false,
+  });
+};
+
+const saveProjectMember = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const deleteProjectMember = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+// ============== 动态 ==================================
+
+const getProjectTrendList = (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    errCode: null,
+    errMessage: null,
+    totalCount: 2,
+    pageSize: 10,
+    pageIndex: 1,
+    data: [
+      {
+        level: "INFO",
+        message: '版本发布',
+        time: 1681385214695,
+      },
+      {
+        level: "ERROR",
+        message: '仓库初始化',
+        time: 1681385214695,
+      },
+      {
+        level: "INFO",
+        message: '仓库创建',
+        time: 1681385214695,
+      },
+      {
+        level: "ERROR",
+        message: '项目创建',
+        time: 1681385214695,
+      },
+    ],
+    notEmpty: true,
+    totalPages: 1,
+    empty: false,
+  });
+};
 
 export default {
   'GET /api/rd/project/list': getProjectList,
@@ -411,12 +676,28 @@ export default {
   'GET /api/rd/service/details/*': getProjectServiceDetails,
   'GET /api/rd/service/domain/select/*': getProjectServiceDomainSelect,
   'POST /api/rd/service/save': saveProjectService,
+  'POST /api/rd/service/complete/**': completeProjectService,
+  'POST /api/rd/service/revoke/**': revokeProjectService,
+  'DELETE /api/rd/service/discard/**': discardProjectService,
+  'DELETE /api/rd/service/delete/**': deleteProjectService,
   'GET /api/rd/model/list/*': getProjectModelList,
   'GET /api/rd/model/release/count/*': getProjectModelReleaseCount,
   'GET /api/rd/model/details/*': getProjectModelDetails,
   'GET /api/rd/model/select/*': getProjectModelFieldSelect,
   'POST /api/rd/model/save': saveProjectModel,
+  'POST /api/rd/model/complete/**': completeProjectModel,
+  'POST /api/rd/model/revoke/**': revokeProjectModel,
+  'DELETE /api/rd/model/discard/**': discardProjectModel,
+  'DELETE /api/rd/model/delete/**': deleteProjectModel,
   'GET /api/rd/project/details/*': getProjectDetails,
   'POST /api/rd/project/save': saveProject,
   'DELETE /api/rd/project/delete/*': deleteProject,
+  'GET /api/rd/member/list': getMemberList,
+  'GET /api/rd/member/import/list': getImportMemberList,
+  'PUT /api/rd/member/save': saveMember,
+  'DELETE /api/rd/member/delete/*': deleteMember,
+  'GET /api/rd/project/member/list': getProjectMemberList,
+  'PUT /api/rd/project/member/save': saveProjectMember,
+  'DELETE /api/rd/project/member/delete/*': deleteProjectMember,
+  'GET /api/rd/trend/list/*': getProjectTrendList,
 };

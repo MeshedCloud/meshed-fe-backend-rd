@@ -57,7 +57,7 @@ UI-решение "из коробки" для корпоративных при
 - Account
   - Account Center
   - Account Settings
-- Result
+- CreateResult
   - Success
   - Failed
 - Exception
@@ -67,7 +67,7 @@ UI-решение "из коробки" для корпоративных при
 - User
   - Login
   - Register
-  - Register Result
+  - Register CreateResult
 ```
 
 ## Использование

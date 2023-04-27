@@ -4,6 +4,7 @@ import type {Version} from "@/services/deployment/version";
 import {VersionCmd} from "@/services/deployment/version";
 import type {Warehouse} from "@/services/deployment/warehouse";
 import {WarehouseCmd} from "@/services/deployment/warehouse";
+import {Packages, PackagesCmd} from "@/services/deployment/packages";
 
 /** 获取项目仓库列表 GET /api/iam/project/warehouse/list */
 export async function getProjectWarehouseList(projectKey: string, params: {}, options?: Record<string, any>) {
@@ -29,4 +30,14 @@ export async function getProjectVersionList(projectKey: string, params: {}, opti
 /** 保存服务模型 POST /api/warehouse/publish */
 export async function publishProjectVersion(data: VersionCmd) {
   return Request.post('/api/rd/version/publish', data);
+}
+
+/** 获取项目制品库列表 GET /api/iam/packages/list/:projectKey */
+export async function getPackagesList(params: { projectKey?: string }, options?: Record<string, any>) {
+  return await Request.getPage<Packages>(`/api/rd/packages/list`, <PageParams>params, options);
+}
+
+/** 获取项目制品库列表 GET /api/iam/packages/save */
+export async function savePackagesList(data: PackagesCmd) {
+  return await Request.put(`/api/rd/packages/save`, data);
 }

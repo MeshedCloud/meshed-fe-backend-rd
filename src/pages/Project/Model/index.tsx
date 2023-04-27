@@ -12,7 +12,7 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import React, {useEffect, useRef, useState} from 'react';
-import {Link, useMatch} from "@@/exports";
+import {useMatch} from "@@/exports";
 import {Button, Col, Divider, Input, InputRef, Row, Tag} from "antd";
 import {OperateEditable, OperateTypes} from "@/services/project/constant";
 import {ArrowLeftOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
@@ -20,6 +20,7 @@ import {
   getProjectDomainSelect,
   getProjectModelDetails,
   getProjectModelSelect,
+  saveProjectDomain,
   saveProjectModel,
 } from "@/services/project/api";
 import {
@@ -29,6 +30,8 @@ import {
   ModelTypes,
   TypeToSuperClassMap
 } from "@/services/project/serviceModel";
+import {success} from "@/common/messages";
+import {history} from "@umijs/max";
 
 const ProjectServiceDetails: React.FC = () => {
 // @ts-ignore
@@ -52,20 +55,26 @@ const ProjectServiceDetails: React.FC = () => {
     data.type = upperCaseType
     data.operate = upperCaseOperate
     data.projectKey = projectKey
-    await saveProjectModel(data)
+    const res = await saveProjectModel(data)
+    success(res, "保存成功")
+    history.back()
   }
 
   const onDomainNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDomianName(event.target.value);
   };
 
-  const addDomainItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    e.preventDefault();
-    setDomainItems([...domainItems, domianName]);
-    setDomianName('');
-    setTimeout(() => {
-      inputDomianRef.current?.focus();
-    }, 0);
+  const addDomainItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+    if (domianName != '') {
+      e.preventDefault();
+      setDomainItems([...domainItems, domianName]);
+      setDomianName('');
+      await saveProjectDomain({projectKey, key: domianName}, {skipErrorHandler: true,});
+      setTimeout(() => {
+        inputDomianRef.current?.focus();
+      }, 0);
+    }
+
   };
   useEffect(() => {
     getProjectDomainSelect(projectKey, {uuid, type, operate: upperCaseOperate}).then(res => {
@@ -82,11 +91,14 @@ const ProjectServiceDetails: React.FC = () => {
   }, [])
   return (
     <PageContainer fixedHeader
-                   content={<Link to={`/project/details/model/${projectKey}`}><ArrowLeftOutlined/>返回模型列表</Link>}
+                   content={<Button type="link" icon={<ArrowLeftOutlined/>} onClick={() => {
+                     history.back()
+                   }
+                   }>返回服务列表</Button>}
                    extra={
                      OperateTypes[upperCaseOperate]?.readonly ? <Button type="link"><EditOutlined/>编辑副本</Button> : <></>
                    }
-                   title={OperateTypes[upperCaseOperate]?.text + ModelTypes[upperCaseType]?.text + "服务"}>
+                   title={OperateTypes[upperCaseOperate]?.text + ModelTypes[upperCaseType]?.text + "模型"}>
       <ProCard style={{padding: 10}}>
         <ProForm
           request={async () => {
@@ -147,13 +159,16 @@ const ProjectServiceDetails: React.FC = () => {
                   />
                 </Col>
                 <Col span={11} offset={2}>
-                  <ProFormSelect
-                    initialValue={TypeToSuperClassMap[upperCaseType]}
-                    rules={[{required: true,},]}
-                    options={superClassOptions}
-                    name="superClass"
-                    label="父类"
-                  />
+                  {
+                    upperCaseType === 'ENUM' ? <></> : <ProFormSelect
+                      initialValue={TypeToSuperClassMap[upperCaseType]}
+                      rules={[{required: true,},]}
+                      options={superClassOptions}
+                      name="superClass"
+                      label="父类"
+                    />
+                  }
+
                 </Col>
               </Row>
               <Row>
@@ -183,45 +198,70 @@ const ProjectServiceDetails: React.FC = () => {
               </Row>
             </ProCard>
 
-            <ProCard title="模型参数" tooltip="符合Java开发字段规范" bordered>
-              <ProFormList
-                name="fields"
-                initialValue={[{}]}
-                copyIconProps={OperateTypes[upperCaseOperate]?.readonly ? false : {
-                  tooltipText: '复制此行到末尾',
-                }}
-                deleteIconProps={OperateTypes[upperCaseOperate]?.readonly ? false : {
-                  tooltipText: '不需要这行了',
-                }}
-                creatorButtonProps={OperateTypes[upperCaseOperate]?.readonly ? false : {creatorButtonText: "新增字段"}}
-              >
-                <ProFormGroup key="group">
-                  <ProFormText name="fieldName" label="字段名称" width="xs" rules={[{required: true,},]}/>
-                  <ProFormText name="explain" label="字段说明" width="xs" rules={[{required: true,},]}/>
-                  <ProFormSelect
-                    initialValue={'String'}
-                    rules={[{required: true,},]}
-                    options={fields}
-                    width="xs"
-                    name="fieldType"
-                    label="字段类型"
-                  />
-                  <ProFormSelect
-                    initialValue={'NONE'}
-                    rules={[{required: true,},]}
-                    options={BaseGenerics}
-                    width="xs"
-                    name="generic"
-                    label="泛型"
-                  />
-                  {
-                    upperCaseType === 'DTO' ? <></> : <><ProFormSwitch name="nonNull" label="是否非空"/>
-                      <ProFormText name="mock" label="模拟数据"/>
-                      <ProFormText name="rule" tooltip='规则必须为json格式：{"max":100,"min":30} -  更多查看文档' label="规则"/></>
-                  }
-                </ProFormGroup>
-              </ProFormList>
-            </ProCard>
+            {
+              upperCaseType === 'ENUM' ? <></> : <ProCard title="模型参数" tooltip="符合Java开发字段规范" bordered>
+                <ProFormList
+                  name="fields"
+                  copyIconProps={OperateTypes[upperCaseOperate]?.readonly ? false : {
+                    tooltipText: '复制此行到末尾',
+                  }}
+                  deleteIconProps={OperateTypes[upperCaseOperate]?.readonly ? false : {
+                    tooltipText: '不需要这行了',
+                  }}
+                  creatorButtonProps={OperateTypes[upperCaseOperate]?.readonly ? false : {creatorButtonText: "新增字段"}}
+                >
+                  <ProFormGroup key="group">
+                    <ProFormText name="fieldName" label="字段名称" width="xs" rules={[{required: true,},]}/>
+                    <ProFormText name="explain" label="字段说明" width="xs" rules={[{required: true,},]}/>
+                    <ProFormSelect
+                      initialValue={'String'}
+                      rules={[{required: true,},]}
+                      options={fields}
+                      width="xs"
+                      name="fieldType"
+                      label="字段类型"
+                    />
+                    <ProFormSelect
+                      initialValue={'NONE'}
+                      rules={[{required: true,},]}
+                      options={BaseGenerics}
+                      width="xs"
+                      name="generic"
+                      label="泛型"
+                    />
+                    {
+                      upperCaseType === 'DTO' ? <></> : <><ProFormSwitch name="nonNull" label="是否非空"/>
+                        <ProFormText name="mock" label="模拟数据"/>
+                        <ProFormText name="rule" tooltip='规则必须为json格式：{"max":100,"min":30} -  更多查看文档' label="规则"/></>
+                    }
+                  </ProFormGroup>
+                </ProFormList>
+              </ProCard>
+            }
+
+            {
+              upperCaseType !== 'ENUM' ? <></> : <ProCard title="枚举信息" tooltip="符合Java开发字段规范" bordered>
+                <ProFormList
+                  name="enumValues"
+                  copyIconProps={OperateTypes[upperCaseOperate]?.readonly ? false : {
+                    tooltipText: '复制此行到末尾',
+                  }}
+                  deleteIconProps={OperateTypes[upperCaseOperate]?.readonly ? false : {
+                    tooltipText: '不需要这行了',
+                  }}
+                  creatorButtonProps={OperateTypes[upperCaseOperate]?.readonly ? false : {creatorButtonText: "新增字段"}}
+                >
+                  <ProFormGroup key="group">
+                    <ProFormText name="name" label="枚举常量" tooltip="枚举常量，不会默认大写" width="xs"
+                                 rules={[{required: true,},]}/>
+                    <ProFormText name="explain" label="字段说明" width="xs" rules={[{required: true,},]}/>
+                    <ProFormText name="value" label="枚举默认值" width="xs" rules={[{required: true,},]}/>
+                    <ProFormText name="ext" label="扩展数据" width="xs" rules={[{required: true,},]}/>
+                  </ProFormGroup>
+                </ProFormList>
+              </ProCard>
+            }
+
           </ProCard>
 
 

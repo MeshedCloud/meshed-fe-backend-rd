@@ -13,7 +13,7 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import React, {useEffect, useRef, useState} from 'react';
-import {Link, useMatch} from "@@/exports";
+import {history, useMatch} from "@@/exports";
 import {Button, Col, Row} from "antd";
 import {ArrowLeftOutlined, EditOutlined} from "@ant-design/icons";
 import {strToUri} from "@/common/uri";
@@ -99,7 +99,7 @@ const ProjectServiceDetailsPage: React.FC = () => {
   }
 
   useEffect(() => {
-    getProjectModelSelect(uuid, {}).then(res => {
+    getProjectModelSelect(projectKey, {}).then(res => {
       if (res.success && res.data) {
         setFields([...BaseFields, ...res.data])
       }
@@ -107,7 +107,10 @@ const ProjectServiceDetailsPage: React.FC = () => {
   }, [])
   return (
     <PageContainer fixedHeader
-                   content={<Link to={`/project/details/service/${projectKey}`}><ArrowLeftOutlined/>返回服务列表</Link>}
+                   content={<Button type="link" icon={<ArrowLeftOutlined/>} onClick={() => {
+                     history.back()
+                   }
+                   }>返回模型列表</Button>}
                    title={OperateTypes[upperCaseOperate]?.text + ServiceTypes['API']?.text + "服务"}>
       <ProCard style={{padding: 10}} extra={
         OperateTypes[upperCaseOperate]?.readonly ? <Button type="link"><EditOutlined/>编辑副本</Button> : <></>
@@ -288,7 +291,7 @@ const ProjectServiceDetailsPage: React.FC = () => {
 
             <ProCard title="响应数据" tooltip="所有参数会合并成一个对象包装返回，建议先建立模型" bordered
                      extra={
-                       <ProFormSwitch name="responseMerge" disabled={!editable} initialValue={true} fieldProps={{
+                       <ProFormSwitch name="responseMerge" initialValue={true} fieldProps={{
                          checkedChildren: "合并",
                          unCheckedChildren: "单参"
                        }}/>

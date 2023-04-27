@@ -2,16 +2,33 @@ import {ActionType, ProList} from '@ant-design/pro-components';
 import {Button, Space, Tag} from 'antd';
 import React, {useEffect, useRef, useState} from 'react';
 import {ReleaseStatus} from "@/services/project/constant";
-import {getProjectModelList, getProjectModelReleaseCount,} from '@/services/project/api';
+import {
+  completeProjectModel,
+  deleteProjectModel,
+  discardProjectModel,
+  getProjectModelList,
+  getProjectModelReleaseCount,
+  revokeProjectModel,
+} from '@/services/project/api';
 import {renderBadge} from "@/common/common";
 import CheckCardModal from "@/components/CheckCardModal";
-import {PlusOutlined} from "@ant-design/icons";
+import {
+  CheckOutlined,
+  CopyOutlined,
+  DeleteOutlined,
+  FormOutlined,
+  PlusOutlined,
+  RollbackOutlined,
+  StopOutlined
+} from "@ant-design/icons";
 import {history} from 'umi';
 import {ModelTypes} from "@/services/project/serviceModel";
 import {convertVersion} from "@/common/utils";
+import ConfirmButton from "@/components/ConfirmButton";
+import {success} from "@/common/messages";
 
 
-const ProjectModelPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
+const MemberPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('RELEASE');
   const [keyword, setKeyword] = useState<React.Key | undefined>();
   const [menuTabs, setMenuTabs] = useState<{ key: string; label: JSX.Element; }[]>();
@@ -80,19 +97,74 @@ const ProjectModelPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
         },
         actions: {
           render: (text, row) => [
-            <Button size="small" type="link" onClick={() => {
-              history.push({
-                pathname: `/project/model/${projectKey}/${row.type}/edit/${row.uuid}`
-              })
-            }}>副本编辑</Button>,
-            <Button size="small" type="link" onClick={() => {
-              history.push({
-                pathname: `/project/model/${projectKey}/${row.type}/copy/${row.uuid}`
-              })
-            }}>复制</Button>,
-            <Button size="small" type="link" onClick={() => {
-
-            }}>废弃</Button>
+            <Button icon={<FormOutlined/>} size="small" type="link" hidden={row.releaseStatus !== "EDIT"}
+                    onClick={() => {
+                      history.push({
+                        pathname: `/project/model/${projectKey}/${row.type}/edit/${row.uuid}`
+                      })
+                    }}>编辑</Button>,
+            <ConfirmButton
+              label="副本编辑" hint="确定创建副本编辑？" size="small" type="link" tip="副本编辑"
+              icon={<FormOutlined/>} hidden={row.releaseStatus !== "EDIT" || row.releaseStatus !== "PROCESSING"}
+              onConfirm={async e => {
+                history.push({
+                  pathname: `/project/model/${projectKey}/${row.type}/edit/${row.uuid}`
+                })
+              }}
+            />,
+            <ConfirmButton
+              label="复制" hint="确定复制服务？" size="small" type="link" tip="复制"
+              icon={<CopyOutlined/>} hidden={!row.suspended}
+              onConfirm={async e => {
+                history.push({
+                  pathname: `/project/model/${projectKey}/${row.type}/edit/${row.uuid}`
+                })
+              }}
+            />,
+            <ConfirmButton
+              label="完成" hint="确定完成服务？" size="small" type="link" tip="完成"
+              icon={<CheckOutlined/>} hidden={row.releaseStatus !== "EDIT"}
+              onConfirm={async e => {
+                const res = await completeProjectModel(row.uuid, {});
+                if (res.success) {
+                  actionRef.current?.reload()
+                }
+                success(res)
+              }}
+            />,
+            <ConfirmButton
+              label="撤销" hint="确定撤销服务？" size="small" type="link" tip="撤销"
+              icon={<RollbackOutlined/>} hidden={row.releaseStatus !== "PROCESSING"}
+              onConfirm={async e => {
+                const res = await revokeProjectModel(row.uuid, {});
+                if (res.success) {
+                  actionRef.current?.reload()
+                }
+                success(res)
+              }}
+            />,
+            <ConfirmButton
+              label="废弃" hint="确定废弃服务？" size="small" type="link" tip="废弃"
+              icon={<StopOutlined/>} hidden={row.releaseStatus !== "EDIT" || row.releaseStatus !== "PROCESSING"}
+              onConfirm={async e => {
+                const res = await discardProjectModel(row.uuid, {});
+                if (res.success) {
+                  actionRef.current?.reload()
+                }
+                success(res)
+              }}
+            />,
+            <ConfirmButton
+              label="删除" hint="确定删除服务？" size="small" type="link" tip="删除"
+              icon={<DeleteOutlined/>} hidden={row.releaseStatus !== "EDIT"}
+              onConfirm={async e => {
+                const res = await deleteProjectModel(row.uuid, {});
+                if (res.success) {
+                  actionRef.current?.reload()
+                }
+                success(res)
+              }}
+            />
           ],
         },
       }}
@@ -131,6 +203,6 @@ const ProjectModelPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
   );
 };
 
-export default ProjectModelPage
+export default MemberPage
 
 

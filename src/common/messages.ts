@@ -9,6 +9,16 @@ export function success(res: undefined | Response<any>, successMsg?: string) {
   return false;
 }
 
+export function successMsg(successMsg?: string) {
+  message.success(successMsg == undefined ? '操作成功' : successMsg);
+  return true;
+}
+
+export function errorMsg(successMsg?: string) {
+  message.error(successMsg == undefined ? '操作成功' : successMsg);
+  return true;
+}
+
 
 export function tips(msg: string) {
   if (msg != undefined && msg != '') {

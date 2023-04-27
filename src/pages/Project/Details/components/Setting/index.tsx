@@ -6,7 +6,7 @@ import BindingView from './components/binding';
 import NotificationView from './components/notification';
 import SecurityView from './components/security';
 import styles from './style.less';
-import ProjectMemberPage from "@/pages/Project/Details/components/Setting/components/Member";
+import ProjectMemberPage from "@/pages/Project/Details/components/Setting/components/ProjectMember";
 
 const {Item} = Menu;
 
@@ -18,16 +18,16 @@ type SettingsState = {
 
 const Settings: React.FC<{ projectKey: string }> = ({projectKey}) => {
   const menuMap: Record<string, React.ReactNode> = {
-    base: '基本设置',
-    security: '安全设置',
-    binding: '账号绑定',
+    // base: '基本设置',
+    // security: '安全设置',
+    // binding: '账号绑定',
     member: '项目成员',
-    notification: '新消息通知',
+    // notification: '新消息通知',
   };
 
   const [initConfig, setInitConfig] = useState<SettingsState>({
     mode: 'inline',
-    selectKey: 'base',
+    selectKey: 'member',
   });
   const dom = useRef<HTMLDivElement>();
 

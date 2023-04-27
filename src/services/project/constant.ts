@@ -44,8 +44,12 @@ export const ReleaseStatus = {
     text: '编辑中'
   },
   PROCESSING: {
-    color: '#108ee9',
+    color: '#0a97ce',
     text: '待发布'
+  },
+  DISCARD: {
+    color: '#e15d5d',
+    text: '废弃'
   },
 
 }

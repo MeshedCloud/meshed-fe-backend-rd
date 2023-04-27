@@ -19,13 +19,48 @@ export class ProjectCmd {
   accessMode: string | undefined;
   pageTemplate: string | undefined;
   serviceTemplate: string | undefined;
-  needMysql: boolean | undefined;
-  needRedis: boolean | undefined;
+  codeTemplates: string[] | undefined;
+  infrastructures: string[] | undefined;
   description: string | undefined;
 }
 
 export class ProjectDetail extends Project {
 }
+
+export class Trend {
+  id!: number;
+  projectKey!: string;
+  level!: string;
+  message!: string;
+  time!: number;
+}
+
+
+export const TrendLogLevelEnum = {
+  INFO: {
+    text: '动态',
+    avatar: 'https://s.meshed.cn/meshed/svg/microservices.svg',
+    description: '微服务系统中具体的微服务项目，业务服务项目选择',
+    status: 'Success',
+    color: '#2db7f5',
+  },
+  ERROR: {
+    text: '错误',
+    status: 'Processing',
+    color: '#FA8072',
+  },
+  WARN: {
+    text: '警告',
+    status: 'Default',
+    color: '#f3a846',
+  },
+  EXCEPTION: {
+    text: '异常',
+    status: 'Default',
+    color: '#d91818',
+  },
+}
+
 
 export const ProjectTypesEnum = {
   SERVICE: {
@@ -69,6 +104,7 @@ export const PageTemplateEnum = {
     status: 'Processing',
     avatar: 'https://gw.alipayobjects.com/zos/bmw-prod/f601048d-61c2-44d0-bf57-ca1afe7fd92e.svg',
     description: '前端模板暂时只有一套，采用其他方案可以选择手动方式构建',
+    disabled: true
   },
 }
 
@@ -98,7 +134,7 @@ export const ProjectAccessModeEnum = {
     text: '开源项目',
     status: 'Processing',
   },
-  NORMAL: {
+  NONE: {
     text: '正常研发',
     status: 'Processing',
   },
@@ -134,7 +170,7 @@ export const ProjectStatusEnum = {
 export const ProjectAccessModeOptions = [
   {
     label: '研发项目',
-    value: 'NORMAL',
+    value: 'NONE',
   },
   {
     label: '内部开源',

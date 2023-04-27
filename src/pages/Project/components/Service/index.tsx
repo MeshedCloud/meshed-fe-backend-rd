@@ -3,12 +3,29 @@ import type {RadioChangeEvent} from 'antd';
 import {Button, Radio, Space, Tag} from 'antd';
 import React, {useEffect, useRef, useState} from 'react';
 import {ReleaseStatus} from "@/services/project/constant";
-import {getProjectServiceList, getProjectServiceReleaseCount} from '@/services/project/api';
+import {
+  completeProjectService,
+  deleteProjectService,
+  discardProjectService,
+  getProjectServiceList,
+  getProjectServiceReleaseCount,
+  revokeProjectService
+} from '@/services/project/api';
 import {renderBadge} from "@/common/common";
 import {history} from 'umi';
 import {RequestTypes, ServiceStatus, ServiceTypes} from "@/services/project/serviceModel";
 import ServiceAddForm from "@/pages/Project/components/Service/components/ServiceAddForm";
 import {convertVersion} from "@/common/utils";
+import ConfirmButton from "@/components/ConfirmButton";
+import {
+  CheckOutlined,
+  CopyOutlined,
+  DeleteOutlined,
+  FormOutlined,
+  RollbackOutlined,
+  StopOutlined
+} from "@ant-design/icons";
+import {success} from "@/common/messages";
 
 
 const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
@@ -79,7 +96,7 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
             return (
               <>
                 <Tag color={RequestTypes[row.requestType]?.color}>{row.requestType}</Tag>
-                {row.preUri}{row.type === 'RPC' ? '#' : ''}{row.uri}
+                {row.uri}
               </>
             )
           }
@@ -111,19 +128,75 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
         },
         actions: {
           render: (text, row) => [
-            <Button size="small" type="link" onClick={() => {
-              history.push({
-                pathname: `/project/service/${projectKey}/edit/${row.groupId}/${row.uuid}`
-              })
-            }}>副本编辑</Button>,
-            <Button size="small" type="link" onClick={() => {
-              history.push({
-                pathname: `/project/service/${projectKey}/copy/${row.groupId}/${row.uuid}`
-              })
-            }}>复制</Button>,
-            <Button size="small" type="link" onClick={() => {
+            <Button icon={<FormOutlined/>} size="small" type="link" hidden={row.releaseStatus !== "EDIT"}
+                    onClick={() => {
+                      history.push({
+                        pathname: `/project/service/${projectKey}/edit/${row.groupId}/${row.uuid}`
+                      })
+                    }}>编辑</Button>,
 
-            }}>废弃</Button>
+            <ConfirmButton
+              label="副本编辑" hint="确定创建副本编辑？" size="small" type="link" tip="副本编辑"
+              icon={<FormOutlined/>} hidden={row.releaseStatus !== "EDIT" || row.releaseStatus !== "PROCESSING"}
+              onConfirm={async e => {
+                history.push({
+                  pathname: `/project/service/${projectKey}/edit/${row.groupId}/${row.uuid}`
+                })
+              }}
+            />,
+            <ConfirmButton
+              label="复制" hint="确定复制服务？" size="small" type="link" tip="复制"
+              icon={<CopyOutlined/>} hidden={!row.suspended}
+              onConfirm={async e => {
+                history.push({
+                  pathname: `/project/service/${projectKey}/copy/${row.groupId}/${row.uuid}`
+                })
+              }}
+            />,
+            <ConfirmButton
+              label="完成" hint="确定完成服务？" size="small" type="link" tip="完成"
+              icon={<CheckOutlined/>} hidden={row.releaseStatus !== "EDIT"}
+              onConfirm={async e => {
+                const res = await completeProjectService(row.uuid, {});
+                if (res.success) {
+                  actionRef.current?.reload()
+                }
+                success(res)
+              }}
+            />,
+            <ConfirmButton
+              label="撤销" hint="确定撤销服务？" size="small" type="link" tip="撤销"
+              icon={<RollbackOutlined/>} hidden={row.releaseStatus !== "PROCESSING"}
+              onConfirm={async e => {
+                const res = await revokeProjectService(row.uuid, {});
+                if (res.success) {
+                  actionRef.current?.reload()
+                }
+                success(res)
+              }}
+            />,
+            <ConfirmButton
+              label="废弃" hint="确定废弃服务？" size="small" type="link" tip="废弃"
+              icon={<StopOutlined/>} hidden={row.releaseStatus !== "EDIT" || row.releaseStatus !== "PROCESSING"}
+              onConfirm={async e => {
+                const res = await discardProjectService(row.uuid, {});
+                if (res.success) {
+                  actionRef.current?.reload()
+                }
+                success(res)
+              }}
+            />,
+            <ConfirmButton
+              label="删除" hint="确定删除服务？" size="small" type="link" tip="删除"
+              icon={<DeleteOutlined/>} hidden={row.releaseStatus !== "EDIT"}
+              onConfirm={async e => {
+                const res = await deleteProjectService(row.uuid, {});
+                if (res.success) {
+                  actionRef.current?.reload()
+                }
+                success(res)
+              }}
+            />
           ],
         },
       }}

@@ -65,7 +65,7 @@ We need your help: https://github.com/ant-design/ant-design-pro/issues/120
 - Account
   - Account Center
   - Account Settings
-- Result
+- CreateResult
   - Success
   - Failed
 - Exception

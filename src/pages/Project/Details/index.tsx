@@ -1,6 +1,6 @@
-import {ArrowLeftOutlined, EllipsisOutlined} from '@ant-design/icons';
+import {ArrowLeftOutlined} from '@ant-design/icons';
 import {PageContainer, ProDescriptions,} from '@ant-design/pro-components';
-import {Button, Dropdown} from 'antd';
+import {Button} from 'antd';
 import React, {useEffect, useState} from 'react';
 import ProjectSummary from "@/pages/Project/Details/components/Summary";
 import ProjectWarehouse from "@/pages/Project/components/Warehouse";
@@ -10,7 +10,7 @@ import ProjectSetting from "@/pages/Project/Details/components/Setting";
 import type {ProjectDetail} from "@/services/project/project";
 import {ProjectAccessModeEnum, ProjectStatusEnum, ProjectTypesEnum} from "@/services/project/project";
 import {getProjectDetails} from "@/services/project/api";
-import {Link, useMatch} from "@@/exports";
+import {history, useMatch} from "@@/exports";
 import ProjectModel from "@/pages/Project/components/Model";
 import {convertVersion} from "@/common/utils";
 
@@ -63,11 +63,11 @@ const readerActivityContent = (type: string, key: string) => {
 
 const ProjectDetails: React.FC = () => {
   // @ts-ignore
-  const {params: {projectKey, type}} = useMatch('/project/details/:type/:projectKey')
+  const {params: {projectKey}} = useMatch('/project/details/:projectKey')
 
   console.log('ProjectDetails', projectKey)
   const [data, setData] = useState<ProjectDetail>()
-  const [activityKey, setActivityKey] = useState<string>(type ? type : 'summary')
+  const [activityKey, setActivityKey] = useState<string>('summary')
   const getProjectDetailsData = (p_code: string) => {
     getProjectDetails(p_code).then(res => {
       if (res && res.success) {
@@ -126,7 +126,10 @@ const ProjectDetails: React.FC = () => {
                 {data?.description}
               </ProDescriptions.Item>
             </ProDescriptions>
-            <Link to={`/project`}><ArrowLeftOutlined/>前往项目页</Link>
+            <Button type="link" icon={<ArrowLeftOutlined/>} onClick={() => {
+              history.back()
+            }
+            }>返回项目列表</Button>
           </div>
         </div>
       )}
@@ -135,37 +138,37 @@ const ProjectDetails: React.FC = () => {
         title: '研发中心',
         ghost: true,
 
-        extra: [
-          <Button key="1">次要按钮</Button>,
-          <Button key="2">次要按钮</Button>,
-          <Button key="3" type="primary">
-            主要按钮
-          </Button>,
-          <Dropdown
-            key="dropdown"
-            trigger={['click']}
-            menu={{
-              items: [
-                {
-                  label: '下拉菜单',
-                  key: '1',
-                },
-                {
-                  label: '下拉菜单2',
-                  key: '2',
-                },
-                {
-                  label: '下拉菜单3',
-                  key: '3',
-                },
-              ],
-            }}
-          >
-            <Button key="4" style={{padding: '0 8px'}}>
-              <EllipsisOutlined/>
-            </Button>
-          </Dropdown>,
-        ],
+        // extra: [
+        //   <Button key="1">次要按钮</Button>,
+        //   <Button key="2">次要按钮</Button>,
+        //   <Button key="3" type="primary">
+        //     主要按钮
+        //   </Button>,
+        //   <Dropdown
+        //     key="dropdown"
+        //     trigger={['click']}
+        //     menu={{
+        //       items: [
+        //         {
+        //           label: '下拉菜单',
+        //           key: '1',
+        //         },
+        //         {
+        //           label: '下拉菜单2',
+        //           key: '2',
+        //         },
+        //         {
+        //           label: '下拉菜单3',
+        //           key: '3',
+        //         },
+        //       ],
+        //     }}
+        //   >
+        //     <Button key="4" style={{padding: '0 8px'}}>
+        //       <EllipsisOutlined/>
+        //     </Button>
+        //   </Dropdown>,
+        // ],
       }}
       tabList={tabs}
       tabProps={{

@@ -29,6 +29,19 @@ declare namespace API {
     validPhone?: boolean;
   };
 
+  type AccountItem = {
+    id?: number;
+    realName: number | undefined;
+    loginId: number | undefined;
+    email: string | undefined;
+    phone: string | undefined;
+    status: string | undefined;
+    validEmail: boolean | undefined;
+    validPhone: boolean | undefined;
+    locked: boolean | undefined;
+  }
+
+
   type LoginResult = {
     status?: string;
     type?: string;
