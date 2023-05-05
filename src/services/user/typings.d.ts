@@ -27,6 +27,8 @@ declare namespace API {
     status?: string;
     validEmail?: boolean;
     validPhone?: boolean;
+    grantedRole?: string[]
+    grantedAuthority?: string[]
   };
 
   type AccountItem = {
