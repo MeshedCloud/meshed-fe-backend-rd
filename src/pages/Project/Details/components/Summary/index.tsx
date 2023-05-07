@@ -77,5 +77,3 @@ const ProjectSummary: React.FC<{ projectKey: string }> = ({projectKey}) => {
 };
 
 export default ProjectSummary
-
-

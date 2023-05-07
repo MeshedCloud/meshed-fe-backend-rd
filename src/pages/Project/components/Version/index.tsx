@@ -4,12 +4,12 @@ import React from 'react';
 import {getProjectVersionList} from '@/services/deployment/api';
 import VersionPublishForm from "@/pages/Project/components/Version/components/VersionPublishForm";
 import {convertVersion} from "@/common/utils";
-import {VersionTypes} from "@/services/deployment/version";
+import {Version, VersionEnvironment, VersionStatus, VersionTypes} from "@/services/deployment/version";
 
 
 const ProjectVersionPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
   return (
-    <ProList<any>
+    <ProList<Version>
       rowKey="name"
       request={params => getProjectVersionList(projectKey, params)}
       metas={{
@@ -31,22 +31,15 @@ const ProjectVersionPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
         },
         content: {
           render: (_, row) => (
-            <div
-              style={{
-                minWidth: 200,
-                flex: 1,
-                display: 'flex',
-                justifyContent: 'flex-end',
-              }}
-            >
-              <div
-                style={{
-                  width: '200px',
-                }}
-              >
-                {convertVersion(row.version)}
-              </div>
-            </div>
+            <Space>
+
+              <Tag>{convertVersion(row.version)}</Tag>
+              <Tag color={VersionStatus[row.status].color}>{VersionStatus[row.status].text}</Tag>
+              {row.environments && row.environments.length > 0 ? row.environments.map(environment => {
+                return <Tag color={VersionEnvironment[environment].color}>{VersionEnvironment[environment].text}</Tag>
+              }) : <></>}
+            </Space>
+
           ),
         },
         actions: {

@@ -8,7 +8,9 @@ import {Member, MemberCmd} from "@/services/project/member";
 import {getImportMemberList, saveMember} from "@/services/project/api";
 import {errorTips, success} from "@/common/messages";
 
-type Props = {};
+type Props = {
+  onFinish?: () => void
+};
 
 export default (props: Props) => {
   const [form] = Form.useForm<MemberCmd>();
@@ -45,6 +47,10 @@ export default (props: Props) => {
         const res = await saveMember({
           userIds: ids
         });
+
+        if (res.success && props.onFinish) {
+          props.onFinish()
+        }
         return success(res);
       }}
     >

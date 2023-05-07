@@ -93,12 +93,15 @@ const ProjectDetails: React.FC = () => {
         >
           <div>
             <ProDescriptions style={{maxWidth: '800px'}} column={3}>
+              <ProDescriptions.Item label="项目名称" valueType="text">
+                {data?.name}
+              </ProDescriptions.Item>
               <ProDescriptions.Item label="项目代号" valueType="text">
                 {data?.key}
               </ProDescriptions.Item>
-              <ProDescriptions.Item label="负责人" valueType="text">
-                {data?.owner}
-              </ProDescriptions.Item>
+              {/*<ProDescriptions.Item label="负责人" valueType="text">*/}
+              {/*  {data?.owner}*/}
+              {/*</ProDescriptions.Item>*/}
               <ProDescriptions.Item label="版本" valueType="text">
                 {convertVersion(data?.version)}
               </ProDescriptions.Item>
@@ -135,7 +138,7 @@ const ProjectDetails: React.FC = () => {
       )}
       header={{
         style: {background: "white"},
-        title: '研发中心',
+        title: '项目工作台',
         ghost: true,
 
         // extra: [

@@ -35,7 +35,7 @@ export async function getInitialState(): Promise<{
     settings = defaultSettings.BaseSettings
   }
   // 在应用模式下，如果不是登录页面，获取用户信息，基座项目无需获取信息
-  if (mode !== 'base' && !window.location.pathname.endsWith(loginPath)) {
+  if (!window.location.pathname.endsWith(loginPath)) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,

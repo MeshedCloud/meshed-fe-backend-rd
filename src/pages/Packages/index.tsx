@@ -2,9 +2,6 @@ import {ActionType, PageContainer, ProList} from '@ant-design/pro-components';
 import React, {ReactText, useRef, useState} from 'react';
 import {getPackagesList} from "@/services/deployment/api";
 import {Packages} from "@/services/deployment/packages";
-import {CopyOutlined} from '@ant-design/icons';
-import {errorMsg, successMsg} from "@/common/messages";
-import CopyBoard from "@/components/CopyBoard";
 import CodeBlock from "@/components/CodeBlock";
 import PackagesForm from './components/PackagesForm';
 
@@ -49,19 +46,7 @@ const ProjectPackagePage: React.FC = () => {
           },
           content: {},
           actions: {
-            render: (text, row) => [
-              <CopyBoard
-                key={row.id}
-                text="py"
-                onSuccess={() => successMsg("内容已经复制到剪切板啦")}
-                onError={() => errorMsg("复制失败")}
-              >
-                <a>
-                  <CopyOutlined/> 复制
-                </a>
-              </CopyBoard>
-
-            ],
+            render: (text, row) => [],
           },
         }}
         toolbar={{
