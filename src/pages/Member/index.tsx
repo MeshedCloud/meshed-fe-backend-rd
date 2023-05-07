@@ -58,7 +58,7 @@ const ProjectMemberPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
         }}
         toolbar={{
           actions: [
-            <MemberForm/>,
+            <MemberForm onFinish={() => actionRef.current?.reload()}/>,
           ],
         }}
         pagination={{

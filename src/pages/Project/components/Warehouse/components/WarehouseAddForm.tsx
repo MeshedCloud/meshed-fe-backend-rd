@@ -25,6 +25,7 @@ import {saveProjectWarehouse} from "@/services/deployment/api";
 
 type Props = {
   projectKey: string;
+  onFinish?: () => void
 };
 
 export default (props: Props) => {
@@ -55,6 +56,9 @@ export default (props: Props) => {
       onFinish={async (values) => {
         values.projectKey = props.projectKey
         const res = await saveProjectWarehouse(values);
+        if (res.success && props.onFinish) {
+          props.onFinish()
+        }
         return res.success;
       }}
     >
@@ -139,7 +143,7 @@ export default (props: Props) => {
       }
 
       {
-        Object.keys(engineTypes).length > 0 ? <ProFormGroup>
+        operate === 'NEW' && Object.keys(engineTypes).length > 0 ? <ProFormGroup>
           <ProForm.Item name='engineTemplate' label="模板(非必选)">
             <CheckCard.Group
               onChange={(checkedValue) => {

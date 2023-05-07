@@ -1,18 +1,19 @@
-import React from 'react';
-import {ProCard, ProList} from "@ant-design/pro-components";
-import {Button, Space} from "antd";
+import React, {useRef} from 'react';
+import {ActionType, ProCard, ProList} from "@ant-design/pro-components";
+import {Space} from "antd";
 import Tag from 'antd/es/tag';
 import {WarehouseTypes} from "@/services/deployment/warehouse";
 import {getProjectWarehouseList} from "@/services/deployment/api";
-import {ForkOutlined, LinkOutlined, PullRequestOutlined} from "@ant-design/icons";
 import WarehouseAddForm from "@/pages/Project/components/Warehouse/components/WarehouseAddForm";
+import {history} from "@umijs/max";
 
 
 const ProjectWarehousePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
-
+  const actionRef = useRef<ActionType>();
   return (
     <ProCard style={{minHeight: 500}}>
       <ProList<any>
+        actionRef={actionRef}
         pagination={{
           defaultPageSize: 9,
           showSizeChanger: false,
@@ -34,7 +35,10 @@ const ProjectWarehousePage: React.FC<{ projectKey: string }> = ({projectKey}) =>
               console.log(record);
             },
             onClick: () => {
-              console.log(record);
+              console.log("onClick", record);
+              history.push({
+                pathname: `/repo/${record.repoId}`
+              })
             },
           };
         }}
@@ -46,7 +50,7 @@ const ProjectWarehousePage: React.FC<{ projectKey: string }> = ({projectKey}) =>
             render: (_, row) => {
               return (
                 <Space size={0}>
-                  <Tag color={WarehouseTypes[row.type]?.color}>{WarehouseTypes[row.type]?.text}</Tag>
+                  <Tag color={WarehouseTypes[row.purposeType]?.color}>{WarehouseTypes[row.purposeType]?.text}</Tag>
                 </Space>
               );
             }
@@ -60,24 +64,34 @@ const ProjectWarehousePage: React.FC<{ projectKey: string }> = ({projectKey}) =>
           avatar: {
             dataIndex: 'avatar',
           },
-          actions: {
-            cardActionProps: 'actions',
-            render: (text, row) => [
-              <Button size="small" type="link" icon={<ForkOutlined/>} onClick={() => {
-
-              }}>分支</Button>,
-              <Button size="small" type="link" icon={<PullRequestOutlined/>} onClick={() => {
-
-              }}>PR</Button>,
-              <Button size="small" type="link" icon={<LinkOutlined/>} onClick={() => {
-
-              }}>HTTPS</Button>
-            ],
-          },
+          // actions: {
+          //   cardActionProps: 'actions',
+          //   render: (text, row) => [
+          //     <Button size="small" type="link" icon={<ForkOutlined/>} onClick={() => {
+          //       history.push({
+          //         pathname: `/repo/${row.uuid}`
+          //       })
+          //     }}>前往</Button>,
+          //     // <Button size="small" type="link" icon={<PullRequestOutlined/>} onClick={() => {
+          //     //
+          //     // }}>PR</Button>,
+          //     <CopyBoard
+          //       key={row.repoName}
+          //       text={row.repoUrl}
+          //       // target="#input"
+          //       onSuccess={()=> successMsg("复制成功")}
+          //       onError={(event) => {
+          //         console.log(event)
+          //       }}
+          //     >
+          //       <a><CopyOutlined />Https</a>
+          //     </CopyBoard>,
+          //   ],
+          // },
         }}
         headerTitle="项目仓库"
         toolBarRender={() => [
-          <WarehouseAddForm projectKey={projectKey}/>
+          <WarehouseAddForm projectKey={projectKey} onFinish={() => actionRef.current?.reload()}/>
         ]
         }
       />

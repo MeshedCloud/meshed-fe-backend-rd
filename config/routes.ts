@@ -5,7 +5,7 @@ export default [
     routes: [{name: '登录', path: '/user/login', component: './User/Login'}],
   },
   // {path: '/workbench', name: '研发工作台', icon: 'smile', component: './Workbench'},
-  {name: '研发项目', icon: 'CodeSandboxOutlined', path: '/project', component: './Project'},
+  {name: '研发项目', icon: 'CodeSandboxOutlined', path: '/project', access: 'canDevelop', component: './Project'},
   {
     name: '发起立项',
     icon: 'CodeSandboxOutlined',
@@ -29,6 +29,14 @@ export default [
     access: 'canDevelop',
     hideInMenu: true,
     component: './Project/Details'
+  },
+  {
+    name: '仓库详情',
+    icon: 'CodeSandboxOutlined',
+    path: '/repo/:repositoryId',
+    access: 'canDevelop',
+    hideInMenu: true,
+    component: './Repo'
   },
   {
     name: '服务',

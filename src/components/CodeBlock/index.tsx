@@ -8,7 +8,7 @@ import 'highlight.js/styles/pojoaque.css'
 export type CodeBlockProps = {
   key?: number | string
   language: string
-  code: string
+  code?: string
 
 };
 const CodeBlock: React.FC<CodeBlockProps> = ({key, language, code}) => {
@@ -21,7 +21,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({key, language, code}) => {
 
       // 创建 clipboard 实例并保存到变量中
       const clipboard = new Clipboard(`#${language}copy_btn`, {
-        text: () => code,
+        text: () => code ? code : '',
       });
 
       // 监听复制成功事件
