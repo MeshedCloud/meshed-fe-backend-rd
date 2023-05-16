@@ -16,7 +16,7 @@ const ProjectPackagePage: React.FC = () => {
   return (
     <PageContainer>
       <ProList<Packages>
-        rowKey="name"
+        rowKey="id"
         actionRef={actionRef}
         expandable={{expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys}}
         request={params => getPackagesList({projectKey: undefined, keyword, ...params})}
@@ -35,7 +35,7 @@ const ProjectPackagePage: React.FC = () => {
             render: (_, row) => {
               return (
                 <div>
-                  <CodeBlock key={row.id} language="xml" code={`<dependency>
+                  <CodeBlock codeKey={row.id} language="xml" code={`<dependency>
   <groupId>${row.groupId}</groupId>
   <artifactId>${row.artifactId}</artifactId>
   <version>${row.version}</version>

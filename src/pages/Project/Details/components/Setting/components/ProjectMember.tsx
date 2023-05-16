@@ -1,7 +1,7 @@
 import {ActionType, ProList} from '@ant-design/pro-components';
 import {Space, Tag} from 'antd';
 import React, {useRef} from 'react';
-import {deleteMember, getProjectMemberList} from '@/services/project/api';
+import {deleteProjectMember, getProjectMemberList} from '@/services/project/api';
 import {ProjectRoles} from "@/services/project/member";
 import {DeleteOutlined} from "@ant-design/icons";
 import {success} from "@/common/messages";
@@ -40,7 +40,7 @@ const ProjectMemberPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
               label="移除" hint="确定从项目中移除成员？移除后成员对该项目不具备权限" size="small" type="link" tip="仅从研发中心移除，会影响研发相关账号"
               icon={<DeleteOutlined/>}
               onConfirm={async e => {
-                const res = await deleteMember(row.id)
+                const res = await deleteProjectMember(row.id)
                 success(res)
                 if (res.success) {
                   actionRef.current?.reload()

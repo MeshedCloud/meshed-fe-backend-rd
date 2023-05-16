@@ -122,11 +122,11 @@ export const BaseGenerics = [
     label: '无',
   },
   {
-    value: 'List',
+    value: 'LIST',
     label: 'List',
   },
   {
-    value: 'Set',
+    value: 'SET',
     label: 'Set',
   },
 ]
@@ -285,7 +285,7 @@ export const AccessModeOptions = [
 export const RequestModeOptions = [
   {
     label: '参数',
-    value: 'PARAM',
+    value: 'MULTIPLE',
   },
   {
     label: '表单',

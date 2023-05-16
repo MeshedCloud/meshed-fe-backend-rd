@@ -1,27 +1,15 @@
-.item {
-  background-color: #FFFFFF;
-  box-shadow: 0 2px 4px 0 rgba(35, 49, 128, 0.02), 0 4px 8px 0 rgba(49, 69, 179, 0.02);
-  border-radius: 8px;
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.65);
-  text-align: justify;
-  line-height: 22px;
-  flex: 1;
-
-
-}
-
-.item:hover {
-  -webkit-box-shadow: #ccc 0px 10px 10px;
-  -moz-box-shadow: #ccc 0px 10px 10px;
-  box-shadow: #ccc 0px 10px 10px;
-
-  //background: #f6f5f5;
+.box {
+  position: relative;
+  max-width: 600px;
+  width: 90%;
+  height: 400px;
+  background: #fff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, .1)
 }
 
 .ribbon {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   overflow: hidden;
   position: absolute
 }
@@ -37,12 +25,12 @@
 .ribbon span {
   position: absolute;
   display: block;
-  width: 160px;
-  padding: 5px 0;
+  width: 225px;
+  padding: 15px 0;
   background-color: #3498db;
   box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
   color: #fff;
-  font: 500 12px/1 'Lato', sans-serif;
+  font: 700 18px/1 'Lato', sans-serif;
   text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
   text-transform: uppercase;
   text-align: center

@@ -9,6 +9,8 @@ import {ArrowLeftOutlined, CopyOutlined, HomeOutlined} from "@ant-design/icons";
 import CodeBlock from "@/components/CodeBlock";
 import {BaseOptionType} from "_rc-select@14.1.13@rc-select/lib/Select";
 import {authentication, clipboardWrite} from "@/common/copy";
+import {history} from "@@/core/history";
+
 
 const RepoDetails: React.FC = () => {
   // @ts-ignore
@@ -82,11 +84,11 @@ const RepoDetails: React.FC = () => {
   return (
     <PageContainer title={<div>
       <div>
-        <span style={{
-          fontSize: 25,
-          fontWeight: "bold",
-          marginRight: "10px"
-        }}>{repo?.name}</span>
+            <span style={{
+              fontSize: 25,
+              fontWeight: "bold",
+              marginRight: "10px"
+            }}>{repo?.name}</span>
         <Tag color="#108ee9">{repo?.repoName}</Tag>
       </div>
       <div style={{
@@ -95,7 +97,14 @@ const RepoDetails: React.FC = () => {
       }}>
         {repo?.description}
       </div>
-    </div>}>
+      <div>
+        <Button type="link" icon={<ArrowLeftOutlined/>} onClick={() => {
+          history.back()
+        }
+        }>返回项目详情</Button>
+      </div>
+    </div>}
+    >
       <div style={{
         display: "flex",
         justifyContent: 'space-between',
@@ -171,7 +180,8 @@ const RepoDetails: React.FC = () => {
               }
             },
           }}
-        /> : <CodeBlock language="java" code={blob}/>
+        /> : <CodeBlock codeKey={refName} language="java" code={blob}/>
+
 
       }
 

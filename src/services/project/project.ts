@@ -3,7 +3,7 @@ export class Project {
   uuid!: string;
   name: number | undefined;
   key!: string | undefined;
-  type: string | undefined;
+  type!: string;
   status: string | undefined;
   version: number | undefined;
   owner: string | undefined;
@@ -150,20 +150,24 @@ export const ProjectAccessModeEnum = {
 
 export const ProjectStatusEnum = {
   APPLY: {
-    text: '审批',
+    text: '审批中',
     status: 'Processing',
+    color: '#FA8072',
   },
   RD: {
     text: '研发',
     status: 'Error',
+    color: '#2db7f5',
   },
   RUN: {
     text: '运行',
     status: 'Success',
+    color: '#5BD8A6',
   },
   DEPRECATED: {
     text: '废弃',
     status: 'Success',
+    color: '#d1d5d5',
   },
 }
 

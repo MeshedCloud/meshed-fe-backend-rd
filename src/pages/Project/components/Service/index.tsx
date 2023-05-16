@@ -96,7 +96,7 @@ const ProjectServicePage: React.FC<{ projectKey: string }> = ({projectKey}) => {
             return (
               <>
                 <Tag color={RequestTypes[row.requestType]?.color}>{row.requestType}</Tag>
-                {row.uri}
+                {row.requestType !== RequestTypes.RPC.text ? row.preUri : ''}{row.uri}
               </>
             )
           }

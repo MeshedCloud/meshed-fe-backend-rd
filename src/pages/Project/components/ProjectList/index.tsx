@@ -9,7 +9,7 @@ import type {Project} from "@/services/project/project";
 import {Link} from "@@/exports";
 
 
-const pageSize = 20;
+const pageSize = 8;
 /**
  * 每个单独的卡片，为了复用样式抽成了组件
  * @param param0
@@ -124,7 +124,7 @@ const ProjectList: React.FC<{
       </div>
 
       {
-        (total > 20 ?
+        (total > 8 ?
           <Pagination style={{marginLeft: 50, marginBottom: 50,}} onChange={onChange} size="small" total={total}
                       defaultPageSize={pageSize}/> : '')
       }

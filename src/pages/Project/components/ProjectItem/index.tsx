@@ -2,8 +2,10 @@ import React from 'react';
 import {EllipsisOutlined} from "@ant-design/icons";
 import type {MenuProps} from "antd";
 import {Dropdown} from "antd";
-import styles from './index.less';
+import './index.less';
+
 import type {Project} from "@/services/project/project";
+import {ProjectStatusEnum, ProjectTypesEnum} from "@/services/project/project";
 
 const items: MenuProps['items'] = [
   {
@@ -42,16 +44,28 @@ const ProjectItem: React.FC<{
 }> = ({data}) => {
   return (
     <div
-      className={styles.item}
+      className="item"
       style={{
         minWidth: '260px',
         maxWidth: '260px',
         minHeight: '240px',
         maxHeight: '260px',
-
+        position: "relative"
 
       }}
     >
+
+      <div className="ribbon ribbon-top-right">
+        {
+          (data.status === 'APPLY' || data.status === 'DEPRECATED') ? <span style={{
+            backgroundColor: ProjectStatusEnum[data.status].color
+          }}>{ProjectStatusEnum[data.status].text}</span> : <span style={{
+            backgroundColor: ProjectTypesEnum[data.type].color
+          }}>{ProjectTypesEnum[data.type].text}</span>
+        }
+
+      </div>
+
       <div
         style={{
           display: 'flex',
@@ -67,6 +81,7 @@ const ProjectItem: React.FC<{
           // backgroundImage:"url('http://s.meshed.cn/meshed/bg/card-backbound.svg')"
         }}
       >
+
         <div
           style={{
             fontSize: '48px',
