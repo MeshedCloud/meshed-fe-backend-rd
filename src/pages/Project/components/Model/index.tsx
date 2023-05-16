@@ -63,6 +63,15 @@ const MemberPage: React.FC<{ projectKey: string }> = ({projectKey}) => {
       metas={{
         title: {
           dataIndex: 'className',
+          render: (_, row) => {
+            return (
+              <Button size="small" type="link" onClick={() => {
+                history.push({
+                  pathname: `/project/model/${projectKey}/${row.type}/read/${row.uuid}`
+                })
+              }}>{row.className}</Button>
+            )
+          }
         },
         description: {
           dataIndex: 'name',

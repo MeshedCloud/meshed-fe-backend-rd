@@ -17,24 +17,31 @@ import {history, useMatch} from "@@/exports";
 import {Button, Col, Row} from "antd";
 import {ArrowLeftOutlined, EditOutlined} from "@ant-design/icons";
 import {strToUri} from "@/common/uri";
-import {getProjectModelSelect, getProjectServiceDetails, saveProjectService} from "@/services/project/api";
+import {
+  getProjectModelSelect,
+  getProjectServiceDetails,
+  getProjectServiceGroup,
+  saveProjectService
+} from "@/services/project/api";
 import type {ProjectServiceDetails} from "@/services/project/serviceModel";
 import {
   AccessModeOptions,
   BaseFields,
   BaseGenerics,
   PathVariableItem,
+  ProjectServiceGroup,
   RequestBodyItem,
   RequestModeOptions,
   RequestTypeOptions,
   ServiceTypes
 } from "@/services/project/serviceModel"
 import {OperateEditable, OperateTypes} from "@/services/project/constant";
-import {errorTips} from "@/common/messages";
+import {errorTips, success} from "@/common/messages";
 
 const ProjectServiceDetailsPage: React.FC = () => {
-// @ts-ignore
+
   const {
+    // @ts-ignore
     params: {
       projectKey,
       operate,
@@ -58,6 +65,7 @@ const ProjectServiceDetailsPage: React.FC = () => {
   const [fields, setFields] = useState<string[]>(BaseFields);
   const formRef = useRef<ProFormInstance<ProjectServiceDetails>>();
   const [uriPrefix, setUriPrefix] = useState('');
+  const [projectServiceGroup, setProjectServiceGroup] = useState<ProjectServiceGroup>();
   const paramActionRef = useRef<FormListActionType<{
     fieldName: string,
     fieldType: string,
@@ -95,13 +103,30 @@ const ProjectServiceDetailsPage: React.FC = () => {
     }
     data.operate = upperCaseOperate
     data.groupId = groupId
-    await saveProjectService(data)
+    if (projectServiceGroup?.type === ServiceTypes.RPC.key) {
+      data.requestType = "RPC"
+    }
+    const res = await saveProjectService(data)
+
+    success(res, "保存成功")
+    if (res.success) {
+      history.back()
+    }
   }
 
   useEffect(() => {
     getProjectModelSelect(projectKey, {}).then(res => {
       if (res.success && res.data) {
         setFields([...BaseFields, ...res.data])
+      }
+    })
+    getProjectServiceGroup(groupId).then(res => {
+      if (res.success) {
+        const data = res.data;
+        setProjectServiceGroup(data);
+        if (data?.type === ServiceTypes.API.key && data.uri) {
+          setUriPrefix(data.uri)
+        }
       }
     })
   }, [])
@@ -111,7 +136,7 @@ const ProjectServiceDetailsPage: React.FC = () => {
                      history.back()
                    }
                    }>返回模型列表</Button>}
-                   title={OperateTypes[upperCaseOperate]?.text + ServiceTypes['API']?.text + "服务"}>
+                   title={OperateTypes[upperCaseOperate]?.text + ServiceTypes[projectServiceGroup?.type ? projectServiceGroup?.type : 'API']?.text + "服务"}>
       <ProCard style={{padding: 10}} extra={
         OperateTypes[upperCaseOperate]?.readonly ? <Button type="link"><EditOutlined/>编辑副本</Button> : <></>
       }>
@@ -151,7 +176,8 @@ const ProjectServiceDetailsPage: React.FC = () => {
                   </Row>
                   <Row>
                     <Col span={24}>
-                      <ProFormText name="method" label="调用的方法名称" disabled={!editable} tooltip="需要符合Java命名规范"
+                      <ProFormText name="method" label="调用的方法名称" disabled={!editable}
+                                   tooltip="需要符合Java命名规范"
                                    fieldProps={{
                                      onBlur: () => {
                                        const method = formRef.current?.getFieldValue('method')
@@ -161,9 +187,10 @@ const ProjectServiceDetailsPage: React.FC = () => {
                                    rules={[{required: true,},]}/>
                     </Col>
                   </Row>
-                  <Row hidden={!("API" === ServiceTypes.API.key)}>
+                  <Row hidden={!(projectServiceGroup?.type === ServiceTypes.API.key)}>
                     <Col span={24}>
-                      <ProFormText name="uri" label="请求路径" tooltip="uri正常会通过方法名称生成，如特殊需要请点编辑自行设置" disabled={uriDisabled}
+                      <ProFormText name="uri" label="请求路径"
+                                   tooltip="uri正常会通过方法名称生成，如特殊需要请点编辑自行设置" disabled={uriDisabled}
                                    rules={[{required: true,},]}
                                    fieldProps={
                                      {
@@ -183,7 +210,7 @@ const ProjectServiceDetailsPage: React.FC = () => {
                 </Col>
                 <Col span={14} offset={2}>
                   {
-                    "API" === ServiceTypes.RPC.key ? <></> : <Row>
+                    projectServiceGroup?.type === ServiceTypes.RPC.key ? <></> : <Row>
                       <Col span={10}>
                         <ProFormRadio.Group
                           disabled={!editable}

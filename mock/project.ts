@@ -14,61 +14,71 @@ const getProjectList = (req: Request, res: Response) => {
         uuid: "rd",
         name: '研发中心',
         key: 'rd',
-        type: 0,
+        type: 'SERVICE',
+        status: 'RD',
       },
       {
         uuid: 'WORKFLOW',
         name: '流程中心',
         key: 'WORKFLOW',
-        type: 0,
+        type: 'ASSEMBLY',
+        status: 'APPLY',
       },
       {
         uuid: 'PLATFORM',
         name: '平台中心',
         key: 'PLATFORM',
-        type: 0,
+        type: 'ASSEMBLY',
+        status: 'RD',
       },
       {
         uuid: 'IAM',
         name: '身份中心',
         key: 'IAM',
-        type: 0,
+        type: 'ASSEMBLY',
+        status: 'APPLY',
       },
       {
         uuid: 'DATA',
         name: '数据中心',
         key: 'DATA',
-        type: 0,
+        type: 'ASSEMBLY',
+        status: 'APPLY',
       },
       {
         uuid: 'SECURITY',
         name: '安全中心',
         key: 'SECURITY',
-        type: 0,
+        type: 'ASSEMBLY',
+        status: 'APPLY',
       },
       {
         uuid: 'COMMON',
         name: '通用组件',
         key: 'COMMON',
-        type: 0,
+        type: 'ASSEMBLY',
+        status: 'APPLY',
       },
       {
         uuid: 'SERIALIZE',
         name: '序列化',
         key: 'SERIALIZE',
-        type: 0,
+        type: 'ASSEMBLY',
+        status: 'RUN',
       },
       {
         uuid: 'data-c',
         name: '数据组件',
         key: 'data-c',
-        type: 0,
+        type: 'INFRASTRUCTURE',
+        status: 'DEPRECATED',
       },
       {
         uuid: 'CQRS',
         name: '标准化',
         key: 'CQRS',
-        type: 0,
+        type: 'ASSEMBLY',
+        status: 'APPLY',
       },
     ],
     notEmpty: true,
@@ -330,7 +340,64 @@ const getProjectModelDetails = (req: Request, res: Response) => {
   });
 };
 
+const getProjectServiceGroupSelect = (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    errCode: null,
+    errMessage: null,
+    totalCount: 2,
+    pageSize: 10,
+    pageIndex: 1,
+    data: [
+      {
+        uuid: "8bda47de330d9c645ba69c61116a0465",
+        name: "消息",
+        className: "MessageRpc",
+        type: "RPC"
+      },
+      {
+        uuid: "ff282a11e90b97fb4303051498fdac3e",
+        name: "消息服务",
+        className: "MessageAdapter",
+        type: "API"
+      },
+      {
+        uuid: "30858deb55fef783ade11c4904a7c53a",
+        name: "字典服务",
+        className: "DictAdapter",
+        type: "API"
+      }
+    ],
+    notEmpty: true,
+    totalPages: 1,
+    empty: false,
+  });
+};
+
+
+const getProjectServiceGroup = (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    errCode: null,
+    errMessage: null,
+    data: {
+      uuid: "30858deb55fef783ade11c4904a7c53a",
+      name: "字典服务",
+      uri: "/dict",
+      className: "DictAdapter",
+      packageName: "cn.meshed.cloud.platform.config.DictAdapter",
+      projectKey: "PLATFORM",
+      description: "字典服务",
+      type: "API"
+    }
+  });
+};
+
 const saveProjectService = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const saveProjectServiceGroup = (req: Request, res: Response) => {
   res.json(SUCCESS_RESPONSE);
 };
 
@@ -671,6 +738,9 @@ const getProjectTrendList = (req: Request, res: Response) => {
 
 export default {
   'GET /api/rd/project/list': getProjectList,
+  'GET /api/rd/service/group/select/*': getProjectServiceGroupSelect,
+  'GET /api/rd/service/group/query/*': getProjectServiceGroup,
+  'POST /api/rd/service/group/save': saveProjectServiceGroup,
   'GET /api/rd/service/list/*': getProjectServiceList,
   'GET /api/rd/service/release/count/*': getProjectServiceReleaseCount,
   'GET /api/rd/service/details/*': getProjectServiceDetails,

@@ -85,7 +85,6 @@ export default (props: Props) => {
           }),
           onChange: (keys: ReactText[]) => {
             setSelectedRowKeys(keys)
-            console.log(keys)
           },
         }}
         tableAlertRender={false}

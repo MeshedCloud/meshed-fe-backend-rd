@@ -55,6 +55,12 @@ export async function getProjectServiceGroupSelect(projectKey: string, params: {
   return await Request.getList<ProjectServiceGroup>(`/api/rd/service/group/select/${projectKey}`, <PageParams>params, options);
 }
 
+/** 获取服务分组选项 GET /api/iam/service/group/query/:projectKey */
+export async function getProjectServiceGroup(uuid: string, options?: Record<string, any>) {
+  return await Request.get<ProjectServiceGroup>(`/api/rd/service/group/query/${uuid}`, {}, options);
+}
+
+
 /** 保存服务接口 POST /api/project/service/save */
 export async function saveProjectServiceGroup(data: ProjectServiceGroup) {
   return Request.post<ProjectServiceGroup>('/api/rd/service/group/save', data);

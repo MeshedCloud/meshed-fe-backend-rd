@@ -15,7 +15,7 @@ import ProjectModel from "@/pages/Project/components/Model";
 import {convertVersion} from "@/common/utils";
 
 
-const tabs = [
+const serviceTabs = [
   {
     tab: '概要',
     key: 'summary',
@@ -27,6 +27,25 @@ const tabs = [
   {
     tab: '模型',
     key: 'model',
+  },
+  {
+    tab: '仓库',
+    key: 'warehouse',
+  },
+  {
+    tab: '版本',
+    key: 'version',
+  },
+  {
+    tab: '设置',
+    key: 'setting',
+  },
+]
+
+const assemblyTabs = [
+  {
+    tab: '概要',
+    key: 'summary',
   },
   {
     tab: '仓库',
@@ -66,12 +85,18 @@ const ProjectDetails: React.FC = () => {
   const {params: {projectKey}} = useMatch('/project/details/:projectKey')
 
   console.log('ProjectDetails', projectKey)
+  const [tabs, setTabs] = useState<any[]>(assemblyTabs)
   const [data, setData] = useState<ProjectDetail>()
   const [activityKey, setActivityKey] = useState<string>('summary')
   const getProjectDetailsData = (p_code: string) => {
     getProjectDetails(p_code).then(res => {
       if (res && res.success) {
         setData(res.data)
+        if (res.data && res.data.type === 'SERVICE') {
+          setTabs(serviceTabs);
+        } else {
+          setTabs(assemblyTabs)
+        }
       }
     })
   }

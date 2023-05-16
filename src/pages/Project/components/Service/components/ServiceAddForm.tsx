@@ -30,6 +30,7 @@ type Props = {
   projectKey: string;
   operate: string;
   uuid: string;
+  onFinish?: () => void
 };
 
 export default (props: Props) => {
@@ -119,6 +120,9 @@ export default (props: Props) => {
               history.push({
                 pathname: `/project/service/${props.projectKey}/${props.operate}/${res.data.uuid}/${props.uuid}`
               })
+            }
+            if (res.success && props.onFinish) {
+              props.onFinish()
             }
           })
         } else {

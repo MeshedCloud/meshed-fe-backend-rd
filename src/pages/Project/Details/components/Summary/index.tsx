@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {ProCard} from "@ant-design/pro-components";
-import {Space, Tag, Timeline} from "antd";
+import {Carousel, Space, Tag, Timeline} from "antd";
 import {Trend, TrendLogLevelEnum} from "@/services/project/project";
 import {getProjectTrendList} from "@/services/project/api";
 import {timeToDate} from "@/common/time";
 import CodeBlock from "@/components/CodeBlock";
 import {getPackagesList} from "@/services/deployment/api";
 import {Packages} from "@/services/deployment/packages";
+import {authentication} from "@/common/copy";
 
 const ProjectSummary: React.FC<{ projectKey: string }> = ({projectKey}) => {
   const [trends, setTrends] = useState<Trend[]>([]);
@@ -25,6 +26,7 @@ const ProjectSummary: React.FC<{ projectKey: string }> = ({projectKey}) => {
         setPackages(res.data)
       }
     })
+    authentication()
   }, []);
   console.log(projectKey)
   return (
@@ -55,18 +57,22 @@ const ProjectSummary: React.FC<{ projectKey: string }> = ({projectKey}) => {
         </ProCard>
         <ProCard colSpan={12} gutter={[0, 16]} ghost split={"horizontal"}>
           <ProCard title="制品" style={{height: 500}}>
-            {
-              packages.length <= 0 ? <></> : packages.map(item => {
-                return <div>
-                  <div>{item.name}</div>
-                  <CodeBlock language="xml" code={`<dependency>
+            <Carousel autoplay dotPosition={"right"}>
+              {
+                packages.length <= 0 ? <></> : packages.map(item => {
+                  return <div>
+                    <div>{item.name}</div>
+                    <CodeBlock codeKey={item.id} language="xml" code={`<dependency>
   <groupId>${item.groupId}</groupId>
   <artifactId>${item.artifactId}</artifactId>
   <version>${item.version}</version>
 </dependency>`}/>
-                </div>
-              })
-            }
+                  </div>
+                })
+              }
+
+            </Carousel>
+
 
           </ProCard>
         </ProCard>

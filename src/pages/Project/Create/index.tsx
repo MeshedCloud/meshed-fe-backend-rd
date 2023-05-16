@@ -193,7 +193,8 @@ const CreateProject: React.FC = () => {
               return true;
             }}
           >
-            <ProDescriptions style={{maxWidth: '800px'}} column={2} title="立项信息确认" tooltip="包含了从服务器请求，columns等功能">
+            <ProDescriptions style={{maxWidth: '800px'}} column={2} title="立项信息确认"
+                             tooltip="包含了从服务器请求，columns等功能">
               <ProDescriptions.Item label="项目名称" span={2} valueType="text">
                 {result.name}
               </ProDescriptions.Item>
@@ -203,18 +204,27 @@ const CreateProject: React.FC = () => {
               <ProDescriptions.Item label="项目级别" valueEnum={ProjectAccessModeEnum}>
                 {result.accessMode}
               </ProDescriptions.Item>
-              <ProDescriptions.Item label="前端模板" valueEnum={PageTemplateEnum}>
-                {result.pageTemplate}
-              </ProDescriptions.Item>
-              <ProDescriptions.Item label="前端项目名称" valueType="text">
-                meshed-fe-backend-{result.key}
-              </ProDescriptions.Item>
-              <ProDescriptions.Item label="后端模板" valueEnum={ServiceTemplateEnum}>
-                {result.serviceTemplate}
-              </ProDescriptions.Item>
-              <ProDescriptions.Item label="后端项目名称" valueType="text">
-                meshed-cloud-{result.key} & meshed-cloud-{result.key}-client
-              </ProDescriptions.Item>
+              {
+                result.pageTemplate ? <>
+                  <ProDescriptions.Item label="前端模板" valueEnum={PageTemplateEnum}>
+                    {result.pageTemplate}
+                  </ProDescriptions.Item>
+                  <ProDescriptions.Item label="前端项目名称" valueType="text">
+                    meshed-fe-backend-{result.key}
+                  </ProDescriptions.Item>
+                </> : ''
+              }
+
+              {
+                result.serviceTemplate ? <>
+                  <ProDescriptions.Item label="后端模板" valueEnum={ServiceTemplateEnum}>
+                    {result.serviceTemplate}
+                  </ProDescriptions.Item>
+                  <ProDescriptions.Item label="后端项目名称" valueType="text">
+                    meshed-cloud-{result.key} & meshed-cloud-{result.key}-client
+                  </ProDescriptions.Item>
+                </> : ''
+              }
               <ProDescriptions.Item label="立项缘由" span={2} valueType="text">
                 {result.description}
               </ProDescriptions.Item>

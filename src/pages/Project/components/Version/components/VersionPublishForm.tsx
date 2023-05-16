@@ -23,6 +23,7 @@ type Props = {
   versionId?: number;
   version?: string;
   sourceId?: string;
+  onFinish?: () => void
 };
 
 export default (props: Props) => {
@@ -37,7 +38,7 @@ export default (props: Props) => {
     setEnvironments(MavenEnvironmentOptions)
     setEnvironment('SNAPSHOT')
     getProjectWarehouseSelect(props.projectKey, {}).then(res => {
-      if (res.success && res.data) {
+      if (res.success && res.data && res.data.length > 0) {
         const arr: { label: string; value: string; }[] = []
         res.data.forEach(item => {
           arr.push({
@@ -86,6 +87,9 @@ export default (props: Props) => {
         }
 
         const res = await publishProjectVersion(values);
+        if (res.success && props.onFinish) {
+          props.onFinish()
+        }
         return res.success;
       }}
     >

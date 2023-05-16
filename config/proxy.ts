@@ -10,7 +10,13 @@
  * @doc https://umijs.org/docs/guides/proxy
  */
 export default {
-  dev: {},
+  dev: {
+    '/api/': {
+      target: 'https://api.meshed.cn',
+      changeOrigin: true,
+      pathRewrite: {'^/api': ''},
+    },
+  },
   /**
    * @name 详细的代理配置
    * @doc https://github.com/chimurai/http-proxy-middleware

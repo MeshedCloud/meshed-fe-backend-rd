@@ -78,13 +78,15 @@ export default (props: Props) => {
         }}
         rowSelection={{
           selectedRowKeys,
+          getCheckboxProps: record => ({
+            disabled: record.disabled,    // 配置无法勾选的列
+          }),
           onChange: (keys: ReactText[]) => {
-            console.log(keys)
             setSelectedRowKeys(keys)
           },
         }}
         tableAlertRender={false}
-        request={getMemberList}
+        request={params => getMemberList({queryDisabled: true, ...params})}
       />
       <ProFormSelect
         name="projectRole"
